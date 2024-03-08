@@ -167,8 +167,8 @@ void OpenGLWindow::bezierFuntionality()
     DS::Container* container = DS::Container::getInstance();
     std::vector<GLdouble> defaultVertices = container->defaultPoints();
     std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
-    container->vertices().clear();
-    container->colors().clear();
+   /* container->vertices().clear();
+    container->colors().clear();*/
 
     displayVertices = container->vertices();
     displayColors = container->colors();
@@ -186,7 +186,8 @@ void OpenGLWindow::bsplineFunctionality()
     OutputDebugStringA("BSpline clicked\n");
 
     DS::Container* container = DS::Container::getInstance();
-    std::vector<GLdouble> defaultVertices = container->defaultPoints();
+   /* std::vector<GLdouble> defaultVertices = container->defaultPoints();*/
+    
     std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
     
 
