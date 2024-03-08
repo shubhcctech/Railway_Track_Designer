@@ -109,7 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Bezier.h" />
-    <ClInclude Include="headers\BSpine.h" />
+    <ClInclude Include="headers\BSpline.h" />
     <ClInclude Include="headers\Container.h" />
     <ClInclude Include="headers\Point3D.h" />
     <ClInclude Include="headers\stdafx.h" />
