@@ -132,13 +132,13 @@ void OpenGLWindow::wheelEvent(QWheelEvent* event)
 
 void OpenGLWindow::zoomIn()
 {
-    scaleFactor /= 0.1f;
+    scaleFactor /= 0.001f;
     update();
 }
 
 void OpenGLWindow::zoomOut()
 {
-    scaleFactor *= 0.11f;
+    scaleFactor *= 0.001f;
     update();
 }
 std::vector<Geometry::Point3D> OpenGLWindow::vertices() {
@@ -174,11 +174,6 @@ void OpenGLWindow::bezierFuntionality()
     displayColors = container->colors();
 
 
-    //controlPoints.push_back(Geometry::Point3D(defaultVertices[0], defaultVertices[1], defaultVertices[2]));
-    //controlPoints.push_back(Geometry::Point3D(defaultVertices[3], defaultVertices[4], defaultVertices[5]));
-    //controlPoints.push_back(Geometry::Point3D(defaultVertices[6], defaultVertices[7], defaultVertices[8]));
-    //controlPoints.push_back(Geometry::Point3D(defaultVertices[9], defaultVertices[10], defaultVertices[11]));
-
     Feature::Bezier bzeierObj;
     bzeierObj.drawCurve(controlPoints, displayVertices, displayColors);
 
@@ -193,17 +188,11 @@ void OpenGLWindow::bsplineFunctionality()
     DS::Container* container = DS::Container::getInstance();
     std::vector<GLdouble> defaultVertices = container->defaultPoints();
     std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
-    container->vertices().clear();
-    container->colors().clear();
+    
 
     displayVertices = container->vertices();
     displayColors = container->colors();
 
-
-    /*controlPoints.push_back(Geometry::Point3D(defaultVertices[0], defaultVertices[1], defaultVertices[2]));
-    controlPoints.push_back(Geometry::Point3D(defaultVertices[3], defaultVertices[4], defaultVertices[5]));
-    controlPoints.push_back(Geometry::Point3D(defaultVertices[6], defaultVertices[7], defaultVertices[8]));
-    controlPoints.push_back(Geometry::Point3D(defaultVertices[9], defaultVertices[10], defaultVertices[11]));*/
 
     Feature::BSpline bsplineObj(3);
     bsplineObj.drawBsplineCurve(controlPoints, displayVertices, displayColors);

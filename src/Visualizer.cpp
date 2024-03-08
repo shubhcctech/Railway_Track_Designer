@@ -114,8 +114,8 @@ void Visualizer::setupUi()
 void Visualizer::handleDisplayButtonClicked()
 {
     DS::Container* container = DS::Container::getInstance();
-   // std::vector<Point3D> controlPoints = container->controlPoints();
-    points.clear();
+    std::vector<Point3D> controlPoints;
+    
 
     for (int i = 0; i < 12; i+=3) {
         double xCoordinate;
@@ -125,11 +125,12 @@ void Visualizer::handleDisplayButtonClicked()
         xCoordinate = mSpinBoxArray[i]->value();
         yCoordinate = mSpinBoxArray[i+1]->value();
         zCoordinate = mSpinBoxArray[i+2]->value();
-        container->controlPoints().push_back(Geometry::Point3D( xCoordinate, yCoordinate, zCoordinate));
+        controlPoints.push_back(Geometry::Point3D( xCoordinate, yCoordinate, zCoordinate));
        
         
     }
-    int j = container->controlPoints().size();
+
+    container->setControlPoints(controlPoints);
   
     if (checked) {
         mRenderer->bsplineFunctionality();

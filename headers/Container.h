@@ -28,10 +28,6 @@ namespace DS
 		std::vector<Geometry::Point3D> controlPoints();
 		void setControlPoints(std::vector<Geometry::Point3D>);
 
-			//std::vector<GLdouble>vertices;
-
-
-			//std::vector<GLdouble>vertices;
-
+			
 	};
 }
