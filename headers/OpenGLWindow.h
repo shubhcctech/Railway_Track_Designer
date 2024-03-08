@@ -20,7 +20,9 @@ public:
     std::vector<Geometry::Point3D> vertices();
     void displayBezierCurve(std::vector<Geometry::Point3D>& controlPoints);
     void bezierFuntionality();
+    void bezierCurveFuntionality();
     void bsplineFunctionality();
+    void bsplineCurveFunctionality();
 
 protected:
     void paintGL() override;
@@ -43,6 +45,8 @@ private:
     QOpenGLShaderProgram* mProgram = nullptr;
     std::vector<GLdouble> displayVertices;
     std::vector<GLdouble> displayColors;
+    std::vector<GLdouble> displayControlPoints;
+    std::vector<GLdouble> displayControlColors;
     std::vector<Geometry::Point3D> mVertices;
     /*QList<QVector3D> mNormals;*/
     QOpenGLBuffer mVbo;

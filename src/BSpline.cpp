@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "BSpine.h"
+#include "BSpline.h"
 
 Feature::BSpline::BSpline(int degree) :mDegree(degree)
 {
@@ -49,7 +49,7 @@ double Feature::BSpline::bSplineBasis(int i, int k, float t, const std::vector<d
     return c1 + c2;
 }
 
-std::vector<Geometry::Point3D> Feature::BSpline::evaluate(std::vector<Geometry::Point3D> control_points, float t) {
+std::vector<Geometry::Point3D> Feature::BSpline::evaluate(std::vector<Geometry::Point3D> control_points, float t, int str) {
     int num_control_points = control_points.size();
     std::vector<double> knots = generateUniformKnots(num_control_points);
 
@@ -68,22 +68,29 @@ std::vector<Geometry::Point3D> Feature::BSpline::evaluate(std::vector<Geometry::
             curve_point.setY(curve_point.y() + control_points.at(j).y() * basis);
             curve_point.setZ(curve_point.z() + control_points.at(j).z() * basis);
 
-
-            curve_point1.setX(curve_point.x() + control_points.at(j).x() * basis);
-            curve_point1.setY((curve_point.y() + control_points.at(j).y() * basis) + 4);
-            curve_point1.setZ(curve_point.z() + control_points.at(j).z() * basis);
+            
+                curve_point1.setX(curve_point.x() + control_points.at(j).x() * basis);
+                curve_point1.setY((curve_point.y() + control_points.at(j).y() * basis) + 4);
+                curve_point1.setZ(curve_point.z() + control_points.at(j).z() * basis);
+            
         }
         curve_points.push_back(curve_point); // Store the computed point
-        curve_points.push_back(curve_point1);
+        if (str == 2)
+        {
+            curve_points.push_back(curve_point1);
+        }
     }
     curve_points.pop_back();
-    curve_points.pop_back();
+    if (str == 2)
+    {
+        curve_points.pop_back();
+    }
     return curve_points;
 }
 
-void Feature::BSpline::drawBsplineCurve(std::vector<Geometry::Point3D>& control_points, std::vector<GLdouble>& inVertices, std::vector<GLdouble>& inColors)
+void Feature::BSpline::drawBsplineCurve(std::vector<Geometry::Point3D>& control_points, std::vector<GLdouble>& inVertices, std::vector<GLdouble>& inColors, int str)
 {
-    std::vector<Geometry::Point3D> curve_points = evaluate(control_points, 100);
+    std::vector<Geometry::Point3D> curve_points = evaluate(control_points, 100,str);
     for (Geometry::Point3D point : curve_points)
     {
         inVertices.push_back(point.x());

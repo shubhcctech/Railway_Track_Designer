@@ -6,8 +6,6 @@
 #include "Container.h"
 using namespace Geometry;
 
-
-
 Visualizer::Visualizer(QWindow* parent) : QMainWindow(nullptr),row(17),checked(false)
 {
     setupUi();
@@ -127,13 +125,12 @@ void Visualizer::handleDisplayButtonClicked()
         zCoordinate = mSpinBoxArray[i+2]->value();
         controlPoints.push_back(Geometry::Point3D( xCoordinate, yCoordinate, zCoordinate));
        
-        
     }
 
     container->setControlPoints(controlPoints);
   
     if (checked) {
-        mRenderer->bsplineFunctionality();
+        mRenderer->bsplineCurveFunctionality();
         mRenderer1->bsplineFunctionality();
         mRenderer->update();
         mRenderer1->update();
@@ -141,13 +138,10 @@ void Visualizer::handleDisplayButtonClicked()
 
     }
     else {
-        mRenderer->bezierFuntionality();
-        mRenderer1->bezierFuntionality();
-        mRenderer->update();
-        mRenderer1->update();
-        
-
-
+       mRenderer->bezierCurveFuntionality();
+       mRenderer1->bezierFuntionality();
+       mRenderer->update();
+       mRenderer1->update();
     }
  
 }
