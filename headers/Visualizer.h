@@ -19,8 +19,10 @@ private:
     void handleDisplayButtonClicked();
     void addSpinBox();
     void handleRadioButtonClicked();
+    void updatePointLabelText(int index);
 
 private:
+    int controlPoints;
     int row;
     bool checked;
     QMenuBar* mMenuBar;
@@ -34,10 +36,17 @@ private:
     QGridLayout* mGridLayout1;
     QPushButton* mDisplay;
     QPushButton* mAddSpinBoxButton;
+    QPushButton* mSet;
     QRadioButton* mRadioButton1;
     QRadioButton* mRadioButton2;
     QButtonGroup* mButtonGroupForRadioBtn;
-    QVector<QDoubleSpinBox*> mSpinBoxArray;
+    QDoubleSpinBox* mXcoordinate;
+    QDoubleSpinBox* mYcoordinate;
+    QDoubleSpinBox* mZcoordinate;
+    QLabel* mParameters;
+    QLabel* mPoint;
+
     std::vector<Point3D> points;
+    QComboBox* mComboBox;
     
 };
