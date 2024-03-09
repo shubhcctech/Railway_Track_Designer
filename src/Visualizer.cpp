@@ -118,6 +118,7 @@ void Visualizer::setupUi()
     connect(mRadioButton1, &QRadioButton::clicked, this, &Visualizer::handleRadioButtonClicked);
     connect(mRadioButton2, &QRadioButton::clicked, this, &Visualizer::handleRadioButtonClicked);
     connect(mComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Visualizer::updatePointLabelText);
+    connect(mSet, &QPushButton::clicked, this, &Visualizer::setPoints);
     
    
 }
@@ -127,11 +128,11 @@ void Visualizer::setupUi()
 void Visualizer::handleDisplayButtonClicked()
 {
     DS::Container* container = DS::Container::getInstance();
-    std::vector<Point3D> controlPoints;
+    std::vector<Point3D> controlPoints = container->controlPoints();
     
 
   
-    container->setControlPoints(controlPoints);
+    
   
     if (checked) {
         
@@ -196,7 +197,17 @@ void Visualizer::updatePointLabelText(int index) {
         qDebug() << "QComboBox not initialized.";
     }
 }
+void Visualizer::setPoints() {
 
+    DS::Container* containerInstance = DS::Container::getInstance();
+    double xCoordinate = mXcoordinate->value();
+    double yCoordinate = mYcoordinate->value();
+    double zCoordinate = mZcoordinate->value();
+
+    points.emplace_back(xCoordinate, yCoordinate, zCoordinate);
+    containerInstance->setControlPoints(points);
+
+}
 
 
 

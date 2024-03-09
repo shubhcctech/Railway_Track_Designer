@@ -20,6 +20,7 @@ private:
     void addSpinBox();
     void handleRadioButtonClicked();
     void updatePointLabelText(int index);
+    void setPoints();
 
 private:
     int controlPoints;
