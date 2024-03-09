@@ -53,7 +53,6 @@ std::vector<GLdouble> DS::Container::defaultPoints()
 }
 
 void DS::Container::setControlPoints(std::vector<Geometry::Point3D> points) {
-
 	mControlPoints = points;
 
 }

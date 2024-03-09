@@ -11,7 +11,7 @@ Feature::Bezier::~Bezier()
 
 }
 Geometry::Point3D Feature::Bezier::calculateBezierPoint(std::vector<Geometry::Point3D>& controlPoints, double t) {
-	int n = controlPoints.size() - 1;
+	int n = 3;
 	double x = 0.0, y = 0.0, z = 0.0;
 	for (int i = 0; i <= n; ++i) {
 		double binomialCoefficient = 1.0;

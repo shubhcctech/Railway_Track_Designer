@@ -23,7 +23,7 @@ public:
     void bezierCurveFuntionality();
     void bsplineFunctionality();
     void bsplineCurveFunctionality();
-
+    void assignColors(std::vector<Geometry::Point3D>& controlPoints);
 protected:
     void paintGL() override;
     void initializeGL() override;
