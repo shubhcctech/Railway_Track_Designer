@@ -11,7 +11,7 @@ Feature::Bezier::~Bezier()
 
 }
 Geometry::Point3D Feature::Bezier::calculateBezierPoint(std::vector<Geometry::Point3D>& controlPoints, double t) {
-	int n = controlPoints.size() - 1;
+	int n = 3;
 	double x = 0.0, y = 0.0, z = 0.0;
 	for (int i = 0; i <= n; ++i) {
 		double binomialCoefficient = 1.0;
@@ -27,7 +27,7 @@ Geometry::Point3D Feature::Bezier::calculateBezierPoint(std::vector<Geometry::Po
 	return Geometry::Point3D(x, y, z);
 }
 
-void Feature::Bezier::drawCurve(std::vector<Geometry::Point3D>& controlPoints, std::vector<GLdouble>& vertices, std::vector<GLdouble>& colors)
+void Feature::Bezier::drawCurve(std::vector<Geometry::Point3D>& controlPoints, std::vector<GLdouble>& vertices, std::vector<GLdouble>& colors, int i)
 {
 	for (double t = 0; t <= 1; t += 0.001)
 	{
@@ -40,13 +40,16 @@ void Feature::Bezier::drawCurve(std::vector<Geometry::Point3D>& controlPoints, s
 		colors.push_back(1.0);
 		colors.push_back(0.0);
 
-		vertices.push_back(bezierPoint.x());
-		vertices.push_back(bezierPoint.y() + 4);
-		vertices.push_back(bezierPoint.z());
+		if(i==2)
+		{
+			vertices.push_back(bezierPoint.x());
+			vertices.push_back(bezierPoint.y() + 4);
+			vertices.push_back(bezierPoint.z());
 
-		colors.push_back(0.0);
-		colors.push_back(1.0);
-		colors.push_back(0.0);
+			colors.push_back(0.0);
+			colors.push_back(1.0);
+			colors.push_back(0.0);
+		}
 	}
 
 }

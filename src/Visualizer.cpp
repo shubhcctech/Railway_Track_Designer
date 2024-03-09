@@ -119,24 +119,22 @@ void Visualizer::setupUi()
     connect(mRadioButton2, &QRadioButton::clicked, this, &Visualizer::handleRadioButtonClicked);
     connect(mComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Visualizer::updatePointLabelText);
     connect(mSet, &QPushButton::clicked, this, &Visualizer::setPoints);
-    
    
+    points.emplace_back(-1.5, 0, 0);
+    points.emplace_back(-0.5, 1.5, 0);
+    points.emplace_back(0.5, -1.5, 0);
+    points.emplace_back(1.5, 0, 0);
+    containerInstance->setControlPoints(points);
 }
 
 
 ///  Display Button.
 void Visualizer::handleDisplayButtonClicked()
 {
-    DS::Container* container = DS::Container::getInstance();
-    std::vector<Point3D> controlPoints = container->controlPoints();
     
-
-  
-    
-  
     if (checked) {
         
-        mRenderer->bsplineFunctionality();
+        mRenderer->bsplineCurveFunctionality();
         mRenderer1->bsplineFunctionality();
         mRenderer->update();
         mRenderer1->update();
@@ -144,14 +142,10 @@ void Visualizer::handleDisplayButtonClicked()
 
     }
     else {
-       
-        mRenderer->bezierFuntionality();
-        mRenderer1->bezierFuntionality();
-        mRenderer->update();
-        mRenderer1->update();
-        
-
-
+       mRenderer->bezierCurveFuntionality();
+       mRenderer1->bezierFuntionality();
+       mRenderer->update();
+       mRenderer1->update();
     }
  
 }
@@ -159,7 +153,7 @@ void Visualizer::handleDisplayButtonClicked()
 /// Function to add Spin boxes.
 void Visualizer::addSpinBox()
 {
-    ;
+    
     if (mComboBox) {
         ///  Add an item to the comboBox
         QString newItem = "Control Point "+QString::number(controlPoints);
@@ -169,23 +163,17 @@ void Visualizer::addSpinBox()
     else {
         qDebug() << "QComboBox not initialized.";
     }
-   
-
-
 }
 // Radio button handling
 void Visualizer::handleRadioButtonClicked()
 {
     if (mRadioButton1->isChecked()) {
         checked = false;
-        mAddSpinBoxButton->setVisible(checked);
-      
+        mAddSpinBoxButton->setVisible(checked);     
     }
     else if (mRadioButton2->isChecked()) {
-
         checked = true;
-        mAddSpinBoxButton->setVisible(checked);
-       
+        mAddSpinBoxButton->setVisible(checked);      
     }
 }
 void Visualizer::updatePointLabelText(int index) {
@@ -200,12 +188,28 @@ void Visualizer::updatePointLabelText(int index) {
 void Visualizer::setPoints() {
 
     DS::Container* containerInstance = DS::Container::getInstance();
+    containerInstance->controlPoints().clear();
+    
     double xCoordinate = mXcoordinate->value();
     double yCoordinate = mYcoordinate->value();
     double zCoordinate = mZcoordinate->value();
 
-    points.emplace_back(xCoordinate, yCoordinate, zCoordinate);
-    containerInstance->setControlPoints(points);
+    int selectedIndex = mComboBox->currentIndex();
+
+    // Check if a valid item is selected in the combo box
+    if (selectedIndex >= 0 && selectedIndex < static_cast<int>(points.size())) {
+        // Modify the Y-coordinate of the selected point
+        points[selectedIndex].setX(yCoordinate);
+        points[selectedIndex].setY(xCoordinate);
+        points[selectedIndex].setZ(zCoordinate);
+        // Update the container with the modified control points
+        containerInstance->setControlPoints(points);
+    }
+    else
+    {
+        points.emplace_back(xCoordinate, yCoordinate, zCoordinate);
+        containerInstance->setControlPoints(points);
+    }
 
 }
 

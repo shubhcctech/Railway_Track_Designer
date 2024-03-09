@@ -13,8 +13,8 @@ namespace Feature
     public:
         BSpline(int degree);
         ~BSpline();
-        std::vector<Geometry::Point3D> evaluate(std::vector<Geometry::Point3D> control_points, float t);
-        void drawBsplineCurve(std::vector<Geometry::Point3D>& control_points, std::vector<GLdouble>& inVertices, std::vector<GLdouble>& inColors);
+        std::vector<Geometry::Point3D> evaluate(std::vector<Geometry::Point3D> control_points, float t, int str);
+        void drawBsplineCurve(std::vector<Geometry::Point3D>& control_points, std::vector<GLdouble>& inVertices, std::vector<GLdouble>& inColors,int str);
 
     private:
         int mDegree;
