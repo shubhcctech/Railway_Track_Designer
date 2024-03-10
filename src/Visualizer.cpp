@@ -19,7 +19,12 @@ void Visualizer::setupUi()
 {   
 
     DS::Container* containerInstance = DS::Container::getInstance();
-    std::vector<GLdouble> defaultPoints = containerInstance->defaultPoints();
+   
+    points.emplace_back(-1.5, 0, 0);
+    points.emplace_back(-0.5, 1.5, 0);
+    points.emplace_back(0.5, -1.5, 0);
+    points.emplace_back(1.5, 0, 0);
+    containerInstance->setControlPoints(points);
 
     ///Object Creation
     QFont font;
@@ -74,15 +79,15 @@ void Visualizer::setupUi()
     mXcoordinate->setRange(-100.0, 100.0);
     mXcoordinate->setSingleStep(0.5);
     mXcoordinate->setPrefix("X: ");
-    mXcoordinate->setValue(0.0);
+    mXcoordinate->setValue(points[0].x());
     mYcoordinate->setRange(-100.0, 100.0);
     mYcoordinate->setSingleStep(0.5);
     mYcoordinate->setPrefix("Y: ");
-    mYcoordinate->setValue(0.0);
+    mYcoordinate->setValue(points[0].y());
     mZcoordinate->setRange(-100.0, 100.0);
     mZcoordinate->setSingleStep(0.5);
     mZcoordinate->setPrefix("Z: ");
-    mZcoordinate->setValue(0.0);
+    mZcoordinate->setValue(points[0].z());
 
     /// Button sizes
     mDisplay->setFixedHeight(50);
@@ -120,11 +125,7 @@ void Visualizer::setupUi()
     connect(mComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Visualizer::updatePointLabelText);
     connect(mSet, &QPushButton::clicked, this, &Visualizer::setPoints);
    
-    points.emplace_back(-1.5, 0, 0);
-    points.emplace_back(-0.5, 1.5, 0);
-    points.emplace_back(0.5, -1.5, 0);
-    points.emplace_back(1.5, 0, 0);
-    containerInstance->setControlPoints(points);
+   
 }
 
 
