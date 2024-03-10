@@ -180,16 +180,27 @@ void Visualizer::handleRadioButtonClicked()
         mComboBox->clear();
         mComboBox->addItem("Start Point");
         mComboBox->addItem("End Point");
-        for (int i = 1; i <= controlPoints-1; ++i) {
+        for (int i = 1; i <= controlPoints - 1; ++i) {
             QString newItem = "Control Point " + QString::number(i);
             mComboBox->addItem(newItem);
+        }
+
+        // Set the combo box index to a valid value if it's out of bounds
+        if (mComboBox->currentIndex() >= mComboBox->count()) {
+            mComboBox->setCurrentIndex(0);
         }
     }
 }
 void Visualizer::updatePointLabelText(int index) {
     if (mComboBox) {
-        QString selectedText = mComboBox->itemText(index);
-        mPoint->setText(selectedText);
+        // Check if the index is within bounds
+        if (index >= 0 && index < static_cast<int>(points.size())) {
+            QString selectedText = mComboBox->itemText(index);
+            mPoint->setText(selectedText);
+            mXcoordinate->setValue(points[index].x());
+            mYcoordinate->setValue(points[index].y());
+            mZcoordinate->setValue(points[index].z());
+        }
     }
     else {
         qDebug() << "QComboBox not initialized.";
