@@ -167,11 +167,23 @@ void Visualizer::handleRadioButtonClicked()
 {
     if (mRadioButton1->isChecked()) {
         checked = false;
-        mAddSpinBoxButton->setVisible(checked);     
+        mAddSpinBoxButton->setVisible(checked);
+        mComboBox->clear();
+        mComboBox->addItem("Start Point");
+        mComboBox->addItem("End Point");
+        mComboBox->addItem("Control Point 1");
+        mComboBox->addItem("Control Point 2");
     }
     else if (mRadioButton2->isChecked()) {
         checked = true;
-        mAddSpinBoxButton->setVisible(checked);      
+        mAddSpinBoxButton->setVisible(checked);
+        mComboBox->clear();
+        mComboBox->addItem("Start Point");
+        mComboBox->addItem("End Point");
+        for (int i = 1; i <= controlPoints-1; ++i) {
+            QString newItem = "Control Point " + QString::number(i);
+            mComboBox->addItem(newItem);
+        }
     }
 }
 void Visualizer::updatePointLabelText(int index) {
