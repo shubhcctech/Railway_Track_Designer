@@ -15,7 +15,7 @@ public:
 
 private:
     void setupUi();
-    void handleSpinBoxValueChanged(double value);
+    //void handleSpinBoxValueChanged(double value);
     void handleDisplayButtonClicked();
     void addSpinBox();
     void handleRadioButtonClicked();

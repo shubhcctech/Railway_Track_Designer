@@ -19,7 +19,12 @@ void Visualizer::setupUi()
 {   
 
     DS::Container* containerInstance = DS::Container::getInstance();
-    std::vector<GLdouble> defaultPoints = containerInstance->defaultPoints();
+   
+    points.emplace_back(-1.5, 0, 0);
+    points.emplace_back(-0.5, 1.5, 0);
+    points.emplace_back(0.5, -1.5, 0);
+    points.emplace_back(1.5, 0, 0);
+    containerInstance->setControlPoints(points);
 
     ///Object Creation
     QFont font;
@@ -74,15 +79,15 @@ void Visualizer::setupUi()
     mXcoordinate->setRange(-100.0, 100.0);
     mXcoordinate->setSingleStep(0.5);
     mXcoordinate->setPrefix("X: ");
-    mXcoordinate->setValue(0.0);
+    mXcoordinate->setValue(points[0].x());
     mYcoordinate->setRange(-100.0, 100.0);
     mYcoordinate->setSingleStep(0.5);
     mYcoordinate->setPrefix("Y: ");
-    mYcoordinate->setValue(0.0);
+    mYcoordinate->setValue(points[0].y());
     mZcoordinate->setRange(-100.0, 100.0);
     mZcoordinate->setSingleStep(0.5);
     mZcoordinate->setPrefix("Z: ");
-    mZcoordinate->setValue(0.0);
+    mZcoordinate->setValue(points[0].z());
 
     /// Button sizes
     mDisplay->setFixedHeight(50);
@@ -120,11 +125,7 @@ void Visualizer::setupUi()
     connect(mComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Visualizer::updatePointLabelText);
     connect(mSet, &QPushButton::clicked, this, &Visualizer::setPoints);
    
-    points.emplace_back(-1.5, 0, 0);
-    points.emplace_back(-0.5, 1.5, 0);
-    points.emplace_back(0.5, -1.5, 0);
-    points.emplace_back(1.5, 0, 0);
-    containerInstance->setControlPoints(points);
+   
 }
 
 
@@ -180,16 +181,27 @@ void Visualizer::handleRadioButtonClicked()
         mComboBox->clear();
         mComboBox->addItem("Start Point");
         mComboBox->addItem("End Point");
-        for (int i = 1; i <= controlPoints-1; ++i) {
+        for (int i = 1; i <= controlPoints - 1; ++i) {
             QString newItem = "Control Point " + QString::number(i);
             mComboBox->addItem(newItem);
+        }
+
+        // Set the combo box index to a valid value if it's out of bounds
+        if (mComboBox->currentIndex() >= mComboBox->count()) {
+            mComboBox->setCurrentIndex(0);
         }
     }
 }
 void Visualizer::updatePointLabelText(int index) {
     if (mComboBox) {
-        QString selectedText = mComboBox->itemText(index);
-        mPoint->setText(selectedText);
+        // Check if the index is within bounds
+        if (index >= 0 && index < static_cast<int>(points.size())) {
+            QString selectedText = mComboBox->itemText(index);
+            mPoint->setText(selectedText);
+            mXcoordinate->setValue(points[index].x());
+            mYcoordinate->setValue(points[index].y());
+            mZcoordinate->setValue(points[index].z());
+        }
     }
     else {
         qDebug() << "QComboBox not initialized.";
