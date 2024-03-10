@@ -90,7 +90,7 @@ std::vector<Geometry::Point3D> Feature::BSpline::evaluate(std::vector<Geometry::
 
 void Feature::BSpline::drawBsplineCurve(std::vector<Geometry::Point3D>& control_points, std::vector<GLdouble>& inVertices, std::vector<GLdouble>& inColors, int str)
 {
-    std::vector<Geometry::Point3D> curve_points = evaluate(control_points, 100,str);
+    std::vector<Geometry::Point3D> curve_points = evaluate(control_points, 1000,str);
     for (Geometry::Point3D point : curve_points)
     {
         inVertices.push_back(point.x());

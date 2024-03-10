@@ -138,8 +138,6 @@ void Visualizer::handleDisplayButtonClicked()
         mRenderer1->bsplineFunctionality();
         mRenderer->update();
         mRenderer1->update();
-       
-
     }
     else {
        mRenderer->bezierCurveFuntionality();
