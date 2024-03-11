@@ -53,16 +53,13 @@ void Visualizer::setupUi()
     mYcoordinate = new QDoubleSpinBox(this);
     mZcoordinate = new QDoubleSpinBox(this);
     mParameters = new QLabel("Parameters: ", this);
-    mPoint = new QLabel("Start Point",this);
+    mSelectedValuesLabel = new QLabel("Selected Values: Start Point", this);
     mComboBox = new QComboBox();
     mParameters->setFont(font);
-    mPoint->setFont(font);
     mSet->setFont(font);
-
-    mPoint->setText("Start Point");
-   
     mRadioButton1->setFont(font);
     mRadioButton2->setFont(font);
+    mSelectedValuesLabel->setFont(font);
     mButtonGroupForRadioBtn = new QButtonGroup(this);
     mButtonGroupForRadioBtn->addButton(mRadioButton1);
     mButtonGroupForRadioBtn->addButton(mRadioButton2);
@@ -100,11 +97,7 @@ void Visualizer::setupUi()
     mGridLayout->addWidget(mRadioButton2, 0, 10, 1, 1);
     mGridLayout->addWidget(mParameters, 1, 8, 1, 3);
     mGridLayout->addWidget(mComboBox, 2, 8, 1, 3);
-    //mGridLayout->addWidget(mPoint, 3, 8, 1, 3);
-    mSelectedValuesLabel = new QLabel("Selected Values: Start Point", this);
-    mSelectedValuesLabel->setFont(font);
     mGridLayout->addWidget(mSelectedValuesLabel, 3, 8, 1, 3);
-
     mGridLayout->addWidget(mXcoordinate, 4, 8, 1, 1);
     mGridLayout->addWidget(mYcoordinate, 4, 9, 1, 1);
     mGridLayout->addWidget(mZcoordinate, 4, 10, 1, 1);
@@ -126,7 +119,6 @@ void Visualizer::setupUi()
     connect(mAddSpinBoxButton, &QPushButton::clicked, this, &Visualizer::addSpinBox);
     connect(mRadioButton1, &QRadioButton::clicked, this, &Visualizer::handleRadioButtonClicked);
     connect(mRadioButton2, &QRadioButton::clicked, this, &Visualizer::handleRadioButtonClicked);
-    connect(mComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Visualizer::updatePointLabelText);
     connect(mSet, &QPushButton::clicked, this, &Visualizer::setPoints);
     connect(mComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Visualizer::updateSelectedValuesLabel);
 
@@ -203,17 +195,9 @@ void Visualizer::updateSelectedValuesLabel(int index)
         QString selectedText = mComboBox->itemText(index);
         // You can modify this to display the actual values from your data structure
         mSelectedValuesLabel->setText("Selected Values: " + selectedText);
-    }
-    else {
-        qDebug() << "QComboBox not initialized.";
-    }
-}
-void Visualizer::updatePointLabelText(int index) {
-    if (mComboBox) {
-        // Check if the index is within bounds
         if (index >= 0 && index < static_cast<int>(points.size())) {
-            QString selectedText = mComboBox->itemText(index);
-            mPoint->setText(selectedText);
+           
+           
             mXcoordinate->setValue(points[index].x());
             mYcoordinate->setValue(points[index].y());
             mZcoordinate->setValue(points[index].z());
@@ -223,6 +207,21 @@ void Visualizer::updatePointLabelText(int index) {
         qDebug() << "QComboBox not initialized.";
     }
 }
+//void Visualizer::updatePointLabelText(int index) {
+//    if (mComboBox) {
+//        // Check if the index is within bounds
+//        if (index >= 0 && index < static_cast<int>(points.size())) {
+//            QString selectedText = mComboBox->itemText(index);
+//            mPoint->setText(selectedText);
+//            mXcoordinate->setValue(points[index].x());
+//            mYcoordinate->setValue(points[index].y());
+//            mZcoordinate->setValue(points[index].z());
+//        }
+//    }
+//    else {
+//        qDebug() << "QComboBox not initialized.";
+//    }
+//}
 void Visualizer::setPoints() {
 
     DS::Container* containerInstance = DS::Container::getInstance();
