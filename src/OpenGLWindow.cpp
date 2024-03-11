@@ -11,6 +11,7 @@
 #include <iostream>
 
 OpenGLWindow::OpenGLWindow() {
+   
 
 }
 OpenGLWindow::OpenGLWindow(const QColor& background, QMainWindow* parent) :
@@ -162,10 +163,13 @@ void OpenGLWindow::bezierFuntionality()
     OutputDebugStringA("Bezier clicked\n");
 
     DS::Container* container = DS::Container::getInstance();
-    displayControlPoints.clear();
-    displayControlColors.clear();
+   // container->vertices().clear();
     displayVertices.clear();
     displayColors.clear();
+    displayControlPoints.clear();
+    displayControlColors.clear();
+    /*displayVertices.clear();
+    displayColors.clear();*/
     std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
     
     Feature::Bezier bzeierObj;

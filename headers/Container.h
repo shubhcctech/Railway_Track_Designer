@@ -1,10 +1,7 @@
 #pragma once
 #include "Point3D.h"
 #include <vector>
-
 #include <QOpenGLFunctions>
-
-
 
 namespace DS
 {

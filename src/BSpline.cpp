@@ -26,7 +26,7 @@ std::vector<double> Feature::BSpline::generateUniformKnots(int num_control_point
     }
 
     // Calculate internal knots
-    for (int i = mDegree + 1; i < num_control_points; ++i) {
+    for (int i = mDegree+1 ; i < num_control_points; ++i) {
         knots[i] = static_cast<double>(i - mDegree) / (num_control_points - mDegree);
     }
 
@@ -69,9 +69,9 @@ std::vector<Geometry::Point3D> Feature::BSpline::evaluate(std::vector<Geometry::
             curve_point.setZ(curve_point.z() + control_points.at(j).z() * basis);
 
             
-                curve_point1.setX(curve_point.x() + control_points.at(j).x() * basis);
-                curve_point1.setY((curve_point.y() + control_points.at(j).y() * basis) + 4);
-                curve_point1.setZ(curve_point.z() + control_points.at(j).z() * basis);
+            curve_point1.setX(curve_point.x() + control_points.at(j).x() * basis);
+            curve_point1.setY((curve_point.y() + control_points.at(j).y() * basis) + 4);
+            curve_point1.setZ(curve_point.z() + control_points.at(j).z() * basis);
             
         }
         curve_points.push_back(curve_point); // Store the computed point
