@@ -21,6 +21,7 @@ private:
     void handleRadioButtonClicked();
     void updatePointLabelText(int index);
     void setPoints();
+    void updateSelectedValuesLabel(int index);
 
 private:
     int controlPoints;
@@ -46,7 +47,7 @@ private:
     QDoubleSpinBox* mZcoordinate;
     QLabel* mParameters;
     QLabel* mPoint;
-
+    QLabel* mSelectedValuesLabel;
     std::vector<Point3D> points;
     QComboBox* mComboBox;
     
