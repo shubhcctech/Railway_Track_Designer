@@ -14,6 +14,7 @@ class OpenGLWindow :public QOpenGLWidget, protected QOpenGLFunctions
 {
 	Q_OBJECT
 public:
+<<<<<<< HEAD
 	OpenGLWindow();
 	OpenGLWindow(const QColor& background, QMainWindow* parent);
 	~OpenGLWindow();
@@ -25,6 +26,18 @@ public:
 	void bsplineFunctionality1D();
 	void bsplineFunctionality2D();
 
+=======
+    OpenGLWindow();
+    OpenGLWindow(const QColor& background, QMainWindow* parent);
+    ~OpenGLWindow();
+    std::vector<Geometry::Point3D> vertices();
+    void displayBezierCurve(std::vector<Geometry::Point3D>& controlPoints);
+    void bezierFuntionality();
+    void bezierCurveFuntionality();
+    void bsplineFunctionality();
+    void bsplineCurveFunctionality();
+    void assignColors(std::vector<Geometry::Point3D>& controlPoints);
+>>>>>>> c2919797ac1910363d74c081458f16265e052fa8
 protected:
 	void paintGL() override;
 	void initializeGL() override;
@@ -38,6 +51,7 @@ private:
 
 
 private:
+<<<<<<< HEAD
 	bool mAnimating = false;
 	QOpenGLContext* mContext = nullptr;
 	QOpenGLPaintDevice* mDevice = nullptr;
@@ -54,6 +68,26 @@ private:
 	int mMatrixUniform;
 	QColor mBackground;
 	QMetaObject::Connection mContextWatchConnection;
+=======
+    bool mAnimating = false;
+    QOpenGLContext* mContext = nullptr;
+    QOpenGLPaintDevice* mDevice = nullptr;
+    QOpenGLShader* mVshader = nullptr;
+    QOpenGLShader* mFshader = nullptr;
+    QOpenGLShaderProgram* mProgram = nullptr;
+    std::vector<GLdouble> displayVertices;
+    std::vector<GLdouble> displayColors;
+    std::vector<GLdouble> displayControlPoints;
+    std::vector<GLdouble> displayControlColors;
+    std::vector<Geometry::Point3D> mVertices;
+    /*QList<QVector3D> mNormals;*/
+    QOpenGLBuffer mVbo;
+    int mVertexAttr;
+    int mNormalAttr;
+    int mMatrixUniform;
+    QColor mBackground;
+    QMetaObject::Connection mContextWatchConnection;
+>>>>>>> c2919797ac1910363d74c081458f16265e052fa8
 
 	GLint m_posAttr = 0;
 	GLint m_colAttr = 0;

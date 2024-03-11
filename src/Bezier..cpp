@@ -10,15 +10,8 @@ Feature::Bezier::~Bezier()
 {
 
 }
-Geometry::Point3D Feature::Bezier::calculateBezierPoint(std::vector<Geometry::Point3D>& controlPoints, double t) {
-	int n = controlPoints.size() - 1;
-	double x = 0.0, y = 0.0, z = 0.0;
-	for (int i = 0; i <= n; ++i) {
-		double binomialCoefficient = 1.0;
-		for (int j = 0; j < i; ++j) {
-			binomialCoefficient *= (n - j) / (j + 1.0);
-		}
 
+<<<<<<< HEAD
 		double term = binomialCoefficient * pow(1 - t, n - i) * pow(t, i);
 		x += controlPoints[i].x() * term;
 		y += controlPoints[i].y() * term;
@@ -54,22 +47,34 @@ void Feature::Bezier::drawCurve2D(std::vector<Geometry::Point3D>& controlPoints,
 {
 	OutputDebugStringA("drawCurve-2D called\n");
 	for (double t = 0; t <= 1; t += 0.001)
+=======
+void Feature::Bezier::drawCurve(std::vector<Geometry::Point3D>& controlPoints, std::vector<GLdouble>& vertices, std::vector<GLdouble>& colors, int i)
+{
+	for (float u = 0; u <= 1; u += 0.001)
+>>>>>>> c2919797ac1910363d74c081458f16265e052fa8
 	{
-		Geometry::Point3D bezierPoint = calculateBezierPoint(controlPoints, t);
-		vertices.push_back(bezierPoint.x());
-		vertices.push_back(bezierPoint.y());
-		vertices.push_back(bezierPoint.z());
+
+		float x = pow(1 - u, 3) * controlPoints[0].x() + 3 * pow(1 - u, 2) * u * controlPoints[1].x() + 3 * (1 - u) * pow(u, 2) * controlPoints[2].x() + pow(u, 3) * controlPoints[3].x();
+		float y = pow(1 - u, 3) * controlPoints[0].y() + 3 * pow(1 - u, 2) * u * controlPoints[1].y() + 3 * (1 - u) * pow(u, 2) * controlPoints[2].y() + pow(u, 3) * controlPoints[3].y();
+		float z = pow(1 - u, 3) * controlPoints[0].z() + 3 * pow(1 - u, 2) * u * controlPoints[1].z() + 3 * (1 - u) * pow(u, 2) * controlPoints[2].z() + pow(u, 3) * controlPoints[3].z();
+
+		vertices.push_back(x);
+		vertices.push_back(y);
+		vertices.push_back(z);
 
 		colors.push_back(0.0);
 		colors.push_back(1.0);
 		colors.push_back(0.0);
 
-		vertices.push_back(bezierPoint.x());
-		vertices.push_back(bezierPoint.y() + 4);
-		vertices.push_back(bezierPoint.z());
+		if(i==2)
+		{
+			vertices.push_back(x);
+			vertices.push_back(y + 4);
+			vertices.push_back(z);
 
-		colors.push_back(0.0);
-		colors.push_back(1.0);
-		colors.push_back(0.0);
+			colors.push_back(0.0);
+			colors.push_back(1.0);
+			colors.push_back(0.0);
+		}
 	}
 }

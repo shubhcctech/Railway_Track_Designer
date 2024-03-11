@@ -49,15 +49,22 @@ double Feature::BSpline::bSplineBasis(int i, int k, float t, const std::vector<d
 	return c1 + c2;
 }
 
+<<<<<<< HEAD
 std::vector<Geometry::Point3D> Feature::BSpline::evaluate1D(std::vector<Geometry::Point3D> control_points, float t) {
 	int num_control_points = control_points.size();
 	std::vector<double> knots = generateUniformKnots(num_control_points);
+=======
+std::vector<Geometry::Point3D> Feature::BSpline::evaluate(std::vector<Geometry::Point3D> control_points, float t, int str) {
+    int num_control_points = control_points.size();
+    std::vector<double> knots = generateUniformKnots(num_control_points);
+>>>>>>> c2919797ac1910363d74c081458f16265e052fa8
 
 	std::vector<Geometry::Point3D> curve_points;
 
 	// Calculate the step size based on the number of samples
 	float step = 1.0f / static_cast<float>(t - 1);
 
+<<<<<<< HEAD
 	for (int i = 0; i < t; ++i) {
 		float t = static_cast<float>(i) * step; // Calculate the parameter 't' within the range [0, 1]
 		Geometry::Point3D curve_point(0.0, 0.0, 0.0); // Initialize curve_point for this iteration
@@ -119,6 +126,46 @@ void Feature::BSpline::drawBsplineCurve1D(std::vector<Geometry::Point3D>& contro
 		inVertices.push_back(point.x());
 		inVertices.push_back(point.y());
 		inVertices.push_back(point.z());
+=======
+    for (int i = 0; i < t; ++i) {
+        float t = static_cast<float>(i) * step; // Calculate the parameter 't' within the range [0, 1]
+        Geometry::Point3D curve_point(0.0, 0.0, 0.0); // Initialize curve_point for this iteration
+        Geometry::Point3D curve_point1(0.0, 0.0, 0.0);
+        for (int j = 0; j < num_control_points; ++j) {
+            float basis = bSplineBasis(j, mDegree + 1, t, knots);
+            curve_point.setX(curve_point.x() + control_points.at(j).x() * basis);
+            curve_point.setY(curve_point.y() + control_points.at(j).y() * basis);
+            curve_point.setZ(curve_point.z() + control_points.at(j).z() * basis);
+
+            
+                curve_point1.setX(curve_point.x() + control_points.at(j).x() * basis);
+                curve_point1.setY((curve_point.y() + control_points.at(j).y() * basis) + 4);
+                curve_point1.setZ(curve_point.z() + control_points.at(j).z() * basis);
+            
+        }
+        curve_points.push_back(curve_point); // Store the computed point
+        if (str == 2)
+        {
+            curve_points.push_back(curve_point1);
+        }
+    }
+    curve_points.pop_back();
+    if (str == 2)
+    {
+        curve_points.pop_back();
+    }
+    return curve_points;
+}
+
+void Feature::BSpline::drawBsplineCurve(std::vector<Geometry::Point3D>& control_points, std::vector<GLdouble>& inVertices, std::vector<GLdouble>& inColors, int str)
+{
+    std::vector<Geometry::Point3D> curve_points = evaluate(control_points, 1000,str);
+    for (Geometry::Point3D point : curve_points)
+    {
+        inVertices.push_back(point.x());
+        inVertices.push_back(point.y());
+        inVertices.push_back(point.z());
+>>>>>>> c2919797ac1910363d74c081458f16265e052fa8
 
 		inColors.push_back(0.5);
 		inColors.push_back(0.5);

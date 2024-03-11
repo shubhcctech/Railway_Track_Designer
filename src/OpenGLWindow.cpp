@@ -61,7 +61,27 @@ void OpenGLWindow::paintGL()
     glEnableVertexAttribArray(m_posAttr);
     glEnableVertexAttribArray(m_colAttr);
 
+<<<<<<< HEAD
     glLineWidth(3.0);
+=======
+
+    //glPointSize(1.0);
+    glLineWidth(3.0);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, displayVertices.size() / 3);
+    glDrawArrays(GL_LINE_STRIP, 0, displayVertices.size() / 3);
+
+    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayControlPoints.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayControlColors.data());
+
+    glEnableVertexAttribArray(m_posAttr);
+    glEnableVertexAttribArray(m_colAttr);
+
+
+    glEnable(GL_PROGRAM_POINT_SIZE);
+
+    glDrawArrays(GL_POINTS, 0, displayControlPoints.size()/3);
+>>>>>>> c2919797ac1910363d74c081458f16265e052fa8
 
     glDrawArrays(GL_LINE_STRIP, 0, displayVertices.size() / 3);
     
@@ -79,6 +99,7 @@ void OpenGLWindow::initializeGL()
         "uniform highp mat4 matrix;\n"
         "void main() {\n"
         "   col = colAttr;\n"
+        "   gl_PointSize = 10.0;\n"
         "   gl_Position = matrix * posAttr;\n"
         "}\n";
 
@@ -142,16 +163,52 @@ void OpenGLWindow::zoomOut()
     scaleFactor *= 0.001f;
     update();
 }
-std::vector<Geometry::Point3D> OpenGLWindow::vertices() {
 
+<<<<<<< HEAD
     return mVertices;
 
 }
 void OpenGLWindow::bezierFuntionality1D()
 {    
+=======
+void OpenGLWindow::bezierFuntionality()
+{
+    OutputDebugStringA("Bezier clicked\n");
+
+>>>>>>> c2919797ac1910363d74c081458f16265e052fa8
     DS::Container* container = DS::Container::getInstance();
+    displayControlPoints.clear();
+    displayControlColors.clear();
+    displayVertices.clear();
+    displayColors.clear();
+    std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
+    
+    Feature::Bezier bzeierObj;
+    bzeierObj.drawCurve(controlPoints, displayVertices, displayColors,2);
+    for (int i = 0; i < 4; i++)
+    {
+        displayControlPoints.push_back(controlPoints[i].x());
+        displayControlPoints.push_back(controlPoints[i].y());
+        displayControlPoints.push_back(controlPoints[i].z());
+
+        displayControlColors.push_back(1);
+        displayControlColors.push_back(0);
+        displayControlColors.push_back(0);
+    }
+}
+
+void OpenGLWindow::bezierCurveFuntionality()
+{  
+    OutputDebugStringA("Bezier clicked1\n");
+
+    DS::Container* container = DS::Container::getInstance();
+    displayControlPoints.resize(0);
+    displayControlColors.resize(0);
+    displayVertices.clear();
+    displayColors.clear();
     std::vector<GLdouble> defaultVertices = container->defaultPoints();
     std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
+<<<<<<< HEAD
     container->vertices().clear();
     container->colors().clear();
 
@@ -160,19 +217,52 @@ void OpenGLWindow::bezierFuntionality1D()
 
     Feature::Bezier bzeierObj;
     bzeierObj.drawCurve1D(controlPoints, displayVertices, displayColors);
+=======
+    
+    Feature::Bezier bzeierObj;
+    bzeierObj.drawCurve(controlPoints, displayVertices, displayColors,1);
+    for (int i = 0; i < 4; i++)
+    {
+        displayControlPoints.push_back(controlPoints[i].x());
+        displayControlPoints.push_back(controlPoints[i].y());
+        displayControlPoints.push_back(controlPoints[i].z());
+
+        displayControlColors.push_back(1);
+        displayControlColors.push_back(0);
+        displayControlColors.push_back(0);
+    }
+>>>>>>> c2919797ac1910363d74c081458f16265e052fa8
 }
 
 void OpenGLWindow::bezierFuntionality2D()
 {
+<<<<<<< HEAD
+=======
+    OutputDebugStringA("BSpline clicked\n");
+
+>>>>>>> c2919797ac1910363d74c081458f16265e052fa8
     DS::Container* container = DS::Container::getInstance();
-    std::vector<GLdouble> defaultVertices = container->defaultPoints();
+    displayControlPoints.clear();
+    displayControlColors.clear();
+    displayVertices.clear();
+    displayColors.clear();
     std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
+<<<<<<< HEAD
     container->vertices().clear();
     container->colors().clear();
+=======
+    
+    Feature::BSpline bsplineObj(controlPoints.size()-1);
+    bsplineObj.drawBsplineCurve(controlPoints, displayVertices, displayColors,2);
+    assignColors(controlPoints);
+}
+>>>>>>> c2919797ac1910363d74c081458f16265e052fa8
 
-    displayVertices = container->vertices();
-    displayColors = container->colors();
+void OpenGLWindow::bsplineCurveFunctionality()
+{
+    OutputDebugStringA("BSpline clicked\n");
 
+<<<<<<< HEAD
     Feature::Bezier bzeierObj;
     bzeierObj.drawCurve2D(controlPoints, displayVertices, displayColors);
 }
@@ -202,4 +292,30 @@ void OpenGLWindow::bsplineFunctionality2D()
 
     Feature::BSpline bsplineObj(3);
     bsplineObj.drawBsplineCurve2D(controlPoints, displayVertices, displayColors);
+=======
+    DS::Container* container = DS::Container::getInstance();
+    displayControlPoints.clear();
+    displayControlColors.clear();
+    displayVertices.clear();
+    displayColors.clear();
+    std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
+    
+    Feature::BSpline bsplineObj(controlPoints.size()-1);
+    bsplineObj.drawBsplineCurve(controlPoints, displayVertices, displayColors, 1);
+    assignColors(controlPoints);
+}
+
+void OpenGLWindow::assignColors(std::vector<Geometry::Point3D>& controlPoints)
+{
+    for (int i = 0; i < controlPoints.size(); i++)
+    {
+        displayControlPoints.push_back(controlPoints[i].x());
+        displayControlPoints.push_back(controlPoints[i].y());
+        displayControlPoints.push_back(controlPoints[i].z());
+
+        displayControlColors.push_back(1);
+        displayControlColors.push_back(0);
+        displayControlColors.push_back(0);
+    }
+>>>>>>> c2919797ac1910363d74c081458f16265e052fa8
 }
