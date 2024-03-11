@@ -81,6 +81,10 @@ This project consists of several header files, each serving a distinct purpose w
 - This header file declares the `Point3D` class representing a 3D point in space.
 - It includes methods for accessing and modifying the coordinates of the point.
 
+## Visualizer.h
+
+- **Header file**: `Visualizer.h`
+
 ### Description:
 - This header file defines the `Visualizer` class, which inherits from `QMainWindow`.
 - It handles the main visualization window and user interface functionalities.
