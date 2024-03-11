@@ -100,7 +100,11 @@ void Visualizer::setupUi()
     mGridLayout->addWidget(mRadioButton2, 0, 10, 1, 1);
     mGridLayout->addWidget(mParameters, 1, 8, 1, 3);
     mGridLayout->addWidget(mComboBox, 2, 8, 1, 3);
-    mGridLayout->addWidget(mPoint, 3, 8, 1, 3);
+    //mGridLayout->addWidget(mPoint, 3, 8, 1, 3);
+    mSelectedValuesLabel = new QLabel("Selected Values: Start Point", this);
+    mSelectedValuesLabel->setFont(font);
+    mGridLayout->addWidget(mSelectedValuesLabel, 3, 8, 1, 3);
+
     mGridLayout->addWidget(mXcoordinate, 4, 8, 1, 1);
     mGridLayout->addWidget(mYcoordinate, 4, 9, 1, 1);
     mGridLayout->addWidget(mZcoordinate, 4, 10, 1, 1);
@@ -124,7 +128,8 @@ void Visualizer::setupUi()
     connect(mRadioButton2, &QRadioButton::clicked, this, &Visualizer::handleRadioButtonClicked);
     connect(mComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Visualizer::updatePointLabelText);
     connect(mSet, &QPushButton::clicked, this, &Visualizer::setPoints);
-   
+    connect(mComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Visualizer::updateSelectedValuesLabel);
+
    
 }
 
@@ -190,6 +195,17 @@ void Visualizer::handleRadioButtonClicked()
         if (mComboBox->currentIndex() >= mComboBox->count()) {
             mComboBox->setCurrentIndex(0);
         }
+    }
+}
+void Visualizer::updateSelectedValuesLabel(int index)
+{
+    if (mComboBox) {
+        QString selectedText = mComboBox->itemText(index);
+        // You can modify this to display the actual values from your data structure
+        mSelectedValuesLabel->setText("Selected Values: " + selectedText);
+    }
+    else {
+        qDebug() << "QComboBox not initialized.";
     }
 }
 void Visualizer::updatePointLabelText(int index) {
