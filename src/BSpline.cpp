@@ -40,11 +40,11 @@ double Feature::BSpline::bSplineBasis(int i, int k, float t, const std::vector<d
         return 0.0f;
     }
 
-    double denom1 = knots[i + k - 1] - knots[i];
-    double denom2 = knots[i + k] - knots[i + 1];
+    double knot1 = knots[i + k - 1] - knots[i];
+    double knot2 = knots[i + k] - knots[i + 1];
 
-    double c1 = (denom1 != 0.0f) ? ((t - knots[i]) / denom1 * bSplineBasis(i, k - 1, t, knots)) : 0.0f;
-    double c2 = (denom2 != 0.0f) ? ((knots[i + k] - t) / denom2 * bSplineBasis(i + 1, k - 1, t, knots)) : 0.0f;
+    double c1 = (knot1 != 0.0f) ? ((t - knots[i]) / knot1 * bSplineBasis(i, k - 1, t, knots)) : 0.0f;
+    double c2 = (knot2 != 0.0f) ? ((knots[i + k] - t) / knot2 * bSplineBasis(i + 1, k - 1, t, knots)) : 0.0f;
 
     return c1 + c2;
 }
