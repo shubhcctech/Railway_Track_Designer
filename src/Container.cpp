@@ -34,9 +34,24 @@ DS::Container* DS::Container::getInstance()
 	return container;
 }
 
-std::vector<GLdouble>  DS::Container::vertices()
+std::vector<GLdouble>  DS::Container:: curveVertices1()
 {
-	return mVertices;
+	return mCurveVertices1;
+}
+
+std::vector<GLdouble>  DS::Container::curveVertices2()
+{
+	return mCurveVertices2;
+}
+
+std::vector<GLdouble>  DS::Container::curveVertices3()
+{
+	return mCurveVertices3;
+}
+
+std::vector<GLdouble>  DS::Container::curveVertices4()
+{
+	return mCurveVertices4;
 }
 std::vector<GLdouble> DS::Container::colors()
 {

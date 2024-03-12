@@ -61,44 +61,65 @@ std::vector<Geometry::Point3D> Feature::BSpline::evaluate(std::vector<Geometry::
     for (int i = 0; i < t; ++i) {
         float t = static_cast<float>(i) * step; // Calculate the parameter 't' within the range [0, 1]
         Geometry::Point3D curve_point(0.0, 0.0, 0.0); // Initialize curve_point for this iteration
-        Geometry::Point3D curve_point1(0.0, 0.0, 0.0);
         for (int j = 0; j < num_control_points; ++j) {
             float basis = bSplineBasis(j, mDegree + 1, t, knots);
             curve_point.setX(curve_point.x() + control_points.at(j).x() * basis);
             curve_point.setY(curve_point.y() + control_points.at(j).y() * basis);
             curve_point.setZ(curve_point.z() + control_points.at(j).z() * basis);
-
-            
-            curve_point1.setX(curve_point.x() + control_points.at(j).x() * basis);
-            curve_point1.setY((curve_point.y() + control_points.at(j).y() * basis) + 4);
-            curve_point1.setZ(curve_point.z() + control_points.at(j).z() * basis);
-            
         }
         curve_points.push_back(curve_point); // Store the computed point
-        if (str == 2)
-        {
-            curve_points.push_back(curve_point1);
-        }
+       
     }
     curve_points.pop_back();
-    if (str == 2)
-    {
-        curve_points.pop_back();
-    }
+   
     return curve_points;
 }
 
-void Feature::BSpline::drawBsplineCurve(std::vector<Geometry::Point3D>& control_points, std::vector<GLdouble>& inVertices, std::vector<GLdouble>& inColors, int str)
+void Feature::BSpline::drawBsplineCurve(std::vector<Geometry::Point3D>& control_points, std::vector<GLdouble>& curveVertices1, std::vector<GLdouble>& curveVertices2, std::vector<GLdouble>& curveVertices3, std::vector<GLdouble>& curveVertices4, std::vector<GLdouble>& inColors, int str)
 {
     std::vector<Geometry::Point3D> curve_points = evaluate(control_points, 1000,str);
     for (Geometry::Point3D point : curve_points)
     {
-        inVertices.push_back(point.x());
-        inVertices.push_back(point.y());
-        inVertices.push_back(point.z());
+
+        curveVertices1.push_back(point.x());
+        curveVertices1.push_back(point.y());
+        curveVertices1.push_back(point.z());
 
         inColors.push_back(0.5);
         inColors.push_back(0.5);
         inColors.push_back(0.5);
+
+        if (str == 2)
+        {
+
+            curveVertices1.push_back(point.x());
+            curveVertices1.push_back(point.y() + 4);
+            curveVertices1.push_back(point.z());
+
+            curveVertices2.push_back(point.x());
+            curveVertices2.push_back(point.y() + 4);
+            curveVertices2.push_back(point.z());
+            curveVertices2.push_back(point.x());
+            curveVertices2.push_back(point.y() + 4);
+            curveVertices2.push_back(point.z() - 4);
+
+            curveVertices3.push_back(point.x());
+            curveVertices3.push_back(point.y() + 4);
+            curveVertices3.push_back(point.z() - 4);
+            curveVertices3.push_back(point.x());
+            curveVertices3.push_back(point.y());
+            curveVertices3.push_back(point.z() - 4);
+
+            curveVertices4.push_back(point.x());
+            curveVertices4.push_back(point.y());
+            curveVertices4.push_back(point.z() - 4);
+            curveVertices4.push_back(point.x());
+            curveVertices4.push_back(point.y());
+            curveVertices4.push_back(point.z());
+
+            inColors.push_back(0.5);
+            inColors.push_back(0.5);
+            inColors.push_back(0.5);
+        }
     }
 }

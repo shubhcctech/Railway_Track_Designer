@@ -105,6 +105,8 @@ void Visualizer::setupUi()
     mGridLayout->addWidget(mAddSpinBoxButton, 6, 8, 1, 3);
     mGridLayout->addWidget(mDisplay,9, 8, 1, 3);
    
+   /* mPointsList = new QListWidget();
+    mGridLayout->addWidget(mPointsList, 48, 6, 2, 3);*/
 
     /// Setting the components.
     setMenuBar(mMenuBar);
@@ -122,7 +124,6 @@ void Visualizer::setupUi()
     connect(mSet, &QPushButton::clicked, this, &Visualizer::setPoints);
     connect(mComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Visualizer::updateSelectedValuesLabel);
 
-   
 }
 
 
@@ -155,6 +156,7 @@ void Visualizer::addSpinBox()
         QString newItem = "Control Point "+QString::number(controlPoints);
         mComboBox->addItem(newItem);
         controlPoints++;
+        
     }
     else {
         qDebug() << "QComboBox not initialized.";
@@ -171,6 +173,8 @@ void Visualizer::handleRadioButtonClicked()
         mComboBox->addItem("End Point");
         mComboBox->addItem("Control Point 1");
         mComboBox->addItem("Control Point 2");
+
+
     }
     else if (mRadioButton2->isChecked()) {
         checked = true;
@@ -182,12 +186,16 @@ void Visualizer::handleRadioButtonClicked()
             QString newItem = "Control Point " + QString::number(i);
             mComboBox->addItem(newItem);
         }
+        
 
         // Set the combo box index to a valid value if it's out of bounds
         if (mComboBox->currentIndex() >= mComboBox->count()) {
             mComboBox->setCurrentIndex(0);
         }
+               
+        
     }
+
 }
 void Visualizer::updateSelectedValuesLabel(int index)
 {
@@ -196,12 +204,12 @@ void Visualizer::updateSelectedValuesLabel(int index)
         // You can modify this to display the actual values from your data structure
         mSelectedValuesLabel->setText("Selected Values: " + selectedText);
         if (index >= 0 && index < static_cast<int>(points.size())) {
-           
-           
+                      
             mXcoordinate->setValue(points[index].x());
             mYcoordinate->setValue(points[index].y());
             mZcoordinate->setValue(points[index].z());
         }
+
     }
     else {
         qDebug() << "QComboBox not initialized.";
@@ -222,6 +230,70 @@ void Visualizer::updateSelectedValuesLabel(int index)
 //        qDebug() << "QComboBox not initialized.";
 //    }
 //}
+
+void Visualizer::updateCurveOnCoordinateChange(double value)
+{
+    DS::Container* containerInstance = DS::Container::getInstance();
+    containerInstance->controlPoints().clear();
+    // Update the X-coordinate of the selected point in real-time
+    int selectedIndex = mComboBox->currentIndex();
+
+    double xCoordinate = mXcoordinate->value();
+    double yCoordinate = mYcoordinate->value();
+    double zCoordinate = mZcoordinate->value();
+
+    if (selectedIndex >= 0 && selectedIndex < static_cast<int>(points.size())) {
+        
+        points[selectedIndex].setX(xCoordinate);
+        points[selectedIndex].setY(yCoordinate);
+        points[selectedIndex].setZ(zCoordinate);
+    }
+    containerInstance->setControlPoints(points);
+    // Update the curve
+    if (checked) {
+        mRenderer->bsplineCurveFunctionality();
+        mRenderer1->bsplineFunctionality();
+    }
+    else {
+        mRenderer->bezierCurveFuntionality();
+        mRenderer1->bezierFuntionality();
+    }
+
+    // Update the OpenGLWindows
+    mRenderer->update();
+    mRenderer1->update();
+}
+
+void Visualizer::handleCurveItemSelection()
+{
+    // get current selected item
+    
+
+    // checks if a curve is selected
+    if (checked)
+    {      
+        // clear points list
+        mPointsList->clear();
+        // iterate through all control points and add the selected point to points list
+        for (const auto& point : points)
+        {
+            mPointsList->addItem(QString("(%1, %2, %3)").arg(point.x()).arg(point.y()).arg(point.z()));
+            
+        }
+
+        
+    }
+    else
+    {
+        // clear points list
+        mPointsList->clear();
+        for (const auto& point : points)
+        {
+            mPointsList->addItem(QString("(%1, %2, %3)").arg(point.x()).arg(point.y()).arg(point.z()));
+
+        }
+    }
+}
 void Visualizer::setPoints() {
 
     DS::Container* containerInstance = DS::Container::getInstance();
@@ -247,7 +319,7 @@ void Visualizer::setPoints() {
         points.emplace_back(xCoordinate, yCoordinate, zCoordinate);
         containerInstance->setControlPoints(points);
     }
-
+    
 }
 
 

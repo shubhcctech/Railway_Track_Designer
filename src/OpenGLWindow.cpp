@@ -65,8 +65,44 @@ void OpenGLWindow::paintGL()
     //glPointSize(1.0);
     glLineWidth(3.0);
 
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, displayVertices.size() / 3);
-    glDrawArrays(GL_LINE_STRIP, 0, displayVertices.size() / 3);
+   /* glDrawArrays(GL_TRIANGLE_STRIP, 0, displayVertices.size() / 3);
+    glDrawArrays(GL_LINE_STRIP, 0, displayColors.size() / 3);*/
+
+    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mCurveVertices1.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayColors.data());
+
+    glEnableVertexAttribArray(m_posAttr);
+    glEnableVertexAttribArray(m_colAttr);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, mCurveVertices1.size() / 3);
+    glDrawArrays(GL_LINE_STRIP, 0, displayColors.size() / 3);
+
+    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mCurveVertices2.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayColors.data());
+
+    glEnableVertexAttribArray(m_posAttr);
+    glEnableVertexAttribArray(m_colAttr);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, mCurveVertices2.size() / 3);
+    glDrawArrays(GL_LINE_STRIP, 0, displayColors.size() / 3);
+
+    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mCurveVertices3.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayColors.data());
+
+    glEnableVertexAttribArray(m_posAttr);
+    glEnableVertexAttribArray(m_colAttr);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, mCurveVertices3.size() / 3);
+    glDrawArrays(GL_LINE_STRIP, 0, displayColors.size() / 3);
+
+    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mCurveVertices4.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayColors.data());
+
+    glEnableVertexAttribArray(m_posAttr);
+    glEnableVertexAttribArray(m_colAttr);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, mCurveVertices4.size() / 3);
+    glDrawArrays(GL_LINE_STRIP, 0, displayColors.size() / 3);
 
     glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayControlPoints.data());
     glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayControlColors.data());
@@ -163,17 +199,18 @@ void OpenGLWindow::bezierFuntionality()
     OutputDebugStringA("Bezier clicked\n");
 
     DS::Container* container = DS::Container::getInstance();
-   // container->vertices().clear();
     displayVertices.clear();
     displayColors.clear();
     displayControlPoints.clear();
     displayControlColors.clear();
-    /*displayVertices.clear();
-    displayColors.clear();*/
+    mCurveVertices1.clear();
+    mCurveVertices2.clear();
+    mCurveVertices3.clear();
+    mCurveVertices4.clear();
     std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
     
     Feature::Bezier bzeierObj;
-    bzeierObj.drawCurve(controlPoints, displayVertices, displayColors,2);
+    bzeierObj.drawCurve(controlPoints, mCurveVertices1, mCurveVertices2, mCurveVertices3, mCurveVertices4, displayColors,2);
     for (int i = 0; i < 4; i++)
     {
         displayControlPoints.push_back(controlPoints[i].x());
@@ -191,15 +228,20 @@ void OpenGLWindow::bezierCurveFuntionality()
     OutputDebugStringA("Bezier clicked1\n");
 
     DS::Container* container = DS::Container::getInstance();
+    
     displayControlPoints.resize(0);
     displayControlColors.resize(0);
     displayVertices.clear();
     displayColors.clear();
+    mCurveVertices1.clear();
+    mCurveVertices2.clear();
+    mCurveVertices3.clear();
+    mCurveVertices4.clear();
     std::vector<GLdouble> defaultVertices = container->defaultPoints();
     std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
     
     Feature::Bezier bzeierObj;
-    bzeierObj.drawCurve(controlPoints, displayVertices, displayColors,1);
+    bzeierObj.drawCurve(controlPoints, mCurveVertices1, mCurveVertices2, mCurveVertices3, mCurveVertices4, displayColors, 1);
     for (int i = 0; i < 4; i++)
     {
         displayControlPoints.push_back(controlPoints[i].x());
@@ -221,10 +263,14 @@ void OpenGLWindow::bsplineFunctionality()
     displayControlColors.clear();
     displayVertices.clear();
     displayColors.clear();
+    mCurveVertices1.clear();
+    mCurveVertices2.clear();
+    mCurveVertices3.clear();
+    mCurveVertices4.clear();
     std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
     
     Feature::BSpline bsplineObj(controlPoints.size()-1);
-    bsplineObj.drawBsplineCurve(controlPoints, displayVertices, displayColors,2);
+    bsplineObj.drawBsplineCurve(controlPoints, mCurveVertices1, mCurveVertices2, mCurveVertices3, mCurveVertices4,displayColors,2);
     assignColors(controlPoints);
 }
 
@@ -237,10 +283,14 @@ void OpenGLWindow::bsplineCurveFunctionality()
     displayControlColors.clear();
     displayVertices.clear();
     displayColors.clear();
+    mCurveVertices1.clear();
+    mCurveVertices2.clear();
+    mCurveVertices3.clear();
+    mCurveVertices4.clear();
     std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
     
     Feature::BSpline bsplineObj(controlPoints.size()-1);
-    bsplineObj.drawBsplineCurve(controlPoints, displayVertices, displayColors, 1);
+    bsplineObj.drawBsplineCurve(controlPoints, mCurveVertices1, mCurveVertices2, mCurveVertices3, mCurveVertices4, displayColors, 1);
     assignColors(controlPoints);
 }
 
