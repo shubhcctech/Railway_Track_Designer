@@ -48,6 +48,10 @@ private:
     std::vector<GLdouble> displayControlPoints;
     std::vector<GLdouble> displayControlColors;
     std::vector<Geometry::Point3D> mVertices;
+    std::vector<GLdouble> mCurveVertices1;
+    std::vector<GLdouble> mCurveVertices2;
+    std::vector<GLdouble> mCurveVertices3;
+    std::vector<GLdouble> mCurveVertices4;
     /*QList<QVector3D> mNormals;*/
     QOpenGLBuffer mVbo;
     int mVertexAttr;
@@ -65,22 +69,5 @@ private:
     float scaleFactor = 1.0;
 
     int m_frame;
-    GLdouble StartPtX;
-    GLdouble StartPtY;
-    GLdouble StartPtZ;
-    GLdouble CrtlPt1X;
-    GLdouble CrtlPt1Y;
-    GLdouble CrtlPt1Z;
-    GLdouble CrtlPt2X;
-    GLdouble CrtlPt2Y;
-    GLdouble CrtlPt2Z;
-    GLdouble CrtlPt3X;
-    GLdouble CrtlPt3Y;
-    GLdouble CrtlPt3Z;
-    GLdouble CrtlPt4X;
-    GLdouble CrtlPt4Y;
-    GLdouble CrtlPt4Z;
-    GLdouble EndPtX;
-    GLdouble EndPtY;
-    GLdouble EndPtZ;
+    
 };

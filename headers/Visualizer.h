@@ -22,10 +22,14 @@ private:
     void updatePointLabelText(int index);
     void setPoints();
     void updateSelectedValuesLabel(int index);
+    void updateCurveOnCoordinateChange(double value);
+    void handleCurveItemSelection();
 private:
     int controlPoints;
     int row;
     bool checked;
+    QListWidget* mPointsList;
+    
     QMenuBar* mMenuBar;
     QToolBar* mMainToolBar;
     QWidget* mCentralWidget;
