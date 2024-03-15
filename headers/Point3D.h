@@ -14,8 +14,6 @@ namespace Geometry
         void setX(double value);
         void setY(double value);
         void setZ(double value);
-        bool operator<(const Point3D& other) const;
-
     private:
         double mX;
         double mY;

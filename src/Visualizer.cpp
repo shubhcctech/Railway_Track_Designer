@@ -3,6 +3,7 @@
 #include "OpenGLWindow.h"
 #include "Point3D.h"
 #include "Bezier.h"
+#include "BSpline.h"
 #include "Container.h"
 using namespace Geometry;
 
@@ -133,16 +134,12 @@ void Visualizer::handleDisplayButtonClicked()
     
     if (checked) {
         
-        mRenderer->bsplineCurveFunctionality();
-        mRenderer1->bsplineFunctionality();
-        mRenderer->update();
-        mRenderer1->update();
+        bsplineCurveFunctionality();
+        bsplineFunctionality();
     }
     else {
-       mRenderer->bezierCurveFuntionality();
-       mRenderer1->bezierFuntionality();
-       mRenderer->update();
-       mRenderer1->update();
+       bezierCurveFuntionality();
+       bezierFuntionality();
     }
  
 }
@@ -187,13 +184,10 @@ void Visualizer::handleRadioButtonClicked()
             mComboBox->addItem(newItem);
         }
         
-
         // Set the combo box index to a valid value if it's out of bounds
         if (mComboBox->currentIndex() >= mComboBox->count()) {
             mComboBox->setCurrentIndex(0);
-        }
-               
-        
+        }       
     }
 
 }
@@ -215,85 +209,7 @@ void Visualizer::updateSelectedValuesLabel(int index)
         qDebug() << "QComboBox not initialized.";
     }
 }
-//void Visualizer::updatePointLabelText(int index) {
-//    if (mComboBox) {
-//        // Check if the index is within bounds
-//        if (index >= 0 && index < static_cast<int>(points.size())) {
-//            QString selectedText = mComboBox->itemText(index);
-//            mPoint->setText(selectedText);
-//            mXcoordinate->setValue(points[index].x());
-//            mYcoordinate->setValue(points[index].y());
-//            mZcoordinate->setValue(points[index].z());
-//        }
-//    }
-//    else {
-//        qDebug() << "QComboBox not initialized.";
-//    }
-//}
 
-void Visualizer::updateCurveOnCoordinateChange(double value)
-{
-    DS::Container* containerInstance = DS::Container::getInstance();
-    containerInstance->controlPoints().clear();
-    // Update the X-coordinate of the selected point in real-time
-    int selectedIndex = mComboBox->currentIndex();
-
-    double xCoordinate = mXcoordinate->value();
-    double yCoordinate = mYcoordinate->value();
-    double zCoordinate = mZcoordinate->value();
-
-    if (selectedIndex >= 0 && selectedIndex < static_cast<int>(points.size())) {
-        
-        points[selectedIndex].setX(xCoordinate);
-        points[selectedIndex].setY(yCoordinate);
-        points[selectedIndex].setZ(zCoordinate);
-    }
-    containerInstance->setControlPoints(points);
-    // Update the curve
-    if (checked) {
-        mRenderer->bsplineCurveFunctionality();
-        mRenderer1->bsplineFunctionality();
-    }
-    else {
-        mRenderer->bezierCurveFuntionality();
-        mRenderer1->bezierFuntionality();
-    }
-
-    // Update the OpenGLWindows
-    mRenderer->update();
-    mRenderer1->update();
-}
-
-void Visualizer::handleCurveItemSelection()
-{
-    // get current selected item
-    
-
-    // checks if a curve is selected
-    if (checked)
-    {      
-        // clear points list
-        mPointsList->clear();
-        // iterate through all control points and add the selected point to points list
-        for (const auto& point : points)
-        {
-            mPointsList->addItem(QString("(%1, %2, %3)").arg(point.x()).arg(point.y()).arg(point.z()));
-            
-        }
-
-        
-    }
-    else
-    {
-        // clear points list
-        mPointsList->clear();
-        for (const auto& point : points)
-        {
-            mPointsList->addItem(QString("(%1, %2, %3)").arg(point.x()).arg(point.y()).arg(point.z()));
-
-        }
-    }
-}
 void Visualizer::setPoints() {
 
     DS::Container* containerInstance = DS::Container::getInstance();
@@ -308,8 +224,8 @@ void Visualizer::setPoints() {
     // Check if a valid item is selected in the combo box
     if (selectedIndex >= 0 && selectedIndex < static_cast<int>(points.size())) {
         // Modify the Y-coordinate of the selected point
-        points[selectedIndex].setX(yCoordinate);
-        points[selectedIndex].setY(xCoordinate);
+        points[selectedIndex].setX(xCoordinate);
+        points[selectedIndex].setY(yCoordinate);
         points[selectedIndex].setZ(zCoordinate);
         // Update the container with the modified control points
         containerInstance->setControlPoints(points);
@@ -320,6 +236,79 @@ void Visualizer::setPoints() {
         containerInstance->setControlPoints(points);
     }
     
+}
+
+void Visualizer::bezierFuntionality()
+{
+    OutputDebugStringA("Bezier clicked\n");
+
+    ContainerData data;
+
+    DS::Container* container = DS::Container::getInstance();
+
+    Feature::Bezier bzeierObj;
+    bzeierObj.drawCurve(container->controlPoints(), data.mCurveVertices1, data.mCurveVertices2, data.mCurveVertices3, data.mCurveVertices4, data.mColors, 2, data.mCurveNormals1, data.mCurveNormals2, data.mCurveNormals3, data.mCurveNormals4);
+    mRenderer1->setData(data);
+    mRenderer1->update();
+
+}
+
+//left side
+void Visualizer::bezierCurveFuntionality()
+{
+    OutputDebugStringA("Bezier curve\n");
+
+    ContainerData data;
+
+    DS::Container* container = DS::Container::getInstance();
+
+    Feature::Bezier bzeierObj;
+    bzeierObj.drawCurve(container->controlPoints(), data.mCurveVertices1, data.mCurveVertices2, data.mCurveVertices3, data.mCurveVertices4, data.mColors, 1, data.mCurveNormals1, data.mCurveNormals2, data.mCurveNormals3, data.mCurveNormals4);
+    mRenderer->setData(data);
+    mRenderer->update();
+}
+
+void Visualizer::bsplineFunctionality()
+{
+    OutputDebugStringA("BSpline clicked\n");
+
+    ContainerData data;
+    DS::Container* container = DS::Container::getInstance();
+
+    Feature::BSpline bsplineObj(container->controlPoints().size() - 1);
+    bsplineObj.drawBsplineCurve(container->controlPoints(), data.mCurveVertices1, data.mCurveVertices2, data.mCurveVertices3, data.mCurveVertices4, data.mColors, 2);
+    assignColors(container->controlPoints());
+
+    mRenderer1->setData(data);
+    mRenderer1->update();
+}
+
+void Visualizer::bsplineCurveFunctionality()
+{
+    OutputDebugStringA("BSpline clicked\n");
+
+    ContainerData data;
+    DS::Container* container = DS::Container::getInstance();
+
+    Feature::BSpline bsplineObj(container->controlPoints().size() - 1);
+    bsplineObj.drawBsplineCurve(container->controlPoints(), data.mCurveVertices1, data.mCurveVertices2, data.mCurveVertices3, data.mCurveVertices4, data.mColors, 1);
+    assignColors(container->controlPoints());
+    mRenderer->setData(data);
+    mRenderer->update();
+}
+
+void Visualizer::assignColors(std::vector<Geometry::Point3D>& controlPoints)
+{
+    /*for (int i = 0; i < controlPoints.size(); i++)
+    {
+        displayControlPoints.push_back(controlPoints[i].x());
+        displayControlPoints.push_back(controlPoints[i].y());
+        displayControlPoints.push_back(controlPoints[i].z());
+
+        displayControlColors.push_back(1);
+        displayControlColors.push_back(0);
+        displayControlColors.push_back(0);
+    }*/
 }
 
 

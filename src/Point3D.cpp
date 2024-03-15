@@ -30,17 +30,3 @@ void Geometry::Point3D::setZ(double value)
 {
     mZ = value;
 }
-bool Geometry::Point3D::operator<(const Point3D& other) const
-{
-    if (mX < other.mX)
-        return true;
-    if (mX > other.mX)
-        return false;
-
-    if (mY < other.mY)
-        return true;
-    if (mY > other.mY)
-        return false;
-
-    return mZ < other.mZ;
-}
