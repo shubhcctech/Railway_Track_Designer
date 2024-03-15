@@ -25,6 +25,10 @@ OpenGLWindow::~OpenGLWindow()
     reset();
 }
 
+void OpenGLWindow::setData(ContainerData data) {
+    mData = data;
+}
+
 void OpenGLWindow::reset()
 {
     // And now release all OpenGL resources.
@@ -48,72 +52,79 @@ void OpenGLWindow::paintGL()
 
     mProgram->bind();
 
-    QMatrix4x4 matrix;
-    //matrix.ortho(-100.0f * scaleFactor, 100.0f * scaleFactor, -100.0f * scaleFactor, 100.0f * scaleFactor, 0.00000000001f, 1000000.0f);
-    matrix.perspective(60.0f * scaleFactor, 4.0f / 3.0f * scaleFactor, 0.1f, 100.0f);
-    matrix.translate(0, 0, -15);
-    matrix.rotate(rotationAngle);
-   
-    mProgram->setUniformValue(m_matrixUniform, matrix);
-    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayVertices.data());
-    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayColors.data());
+    QMatrix4x4 modelMatrix;
+    QMatrix4x4 translationMatrix;
+    QMatrix4x4 scaleMatrix;
+    QMatrix4x4 rotationMatrix;
+    QMatrix4x4 viewMatrix;
+    QMatrix4x4 projectionMatrix;
+    QMatrix3x3 normalMatrix;
+    QVector3D lightPos;
+    lightPos = QVector3D(0.0f, 5.0f, 20.0f);
+    //projectionMatrix.ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+    projectionMatrix.perspective(60.0f * scaleFactor, 4.0f / 3.0f * scaleFactor, 0.1f, 100.0f);
+    translationMatrix.translate(0, 0, -30);
+    scaleMatrix.scale(2.0);
+    rotationMatrix.rotate(rotationAngle);
 
-    glEnableVertexAttribArray(m_posAttr);
-    glEnableVertexAttribArray(m_colAttr);
+    modelMatrix = translationMatrix * scaleMatrix * rotationMatrix;
+    viewMatrix.setToIdentity();
+    normalMatrix = (modelMatrix.normalMatrix());
+
+    mProgram->setUniformValue(m_modelMatrixUniform, modelMatrix);
+    mProgram->setUniformValue(m_viewMatrixUniform, viewMatrix);
+    mProgram->setUniformValue(m_projectionMatrixUniform, projectionMatrix);
+    mProgram->setUniformValue(m_normalMatrixUniform, normalMatrix);
+    mProgram->setUniformValue(m_lightPosUniform, lightPos);
 
 
-    //glPointSize(1.0);
     glLineWidth(3.0);
 
-   /* glDrawArrays(GL_TRIANGLE_STRIP, 0, displayVertices.size() / 3);
-    glDrawArrays(GL_LINE_STRIP, 0, displayColors.size() / 3);*/
 
-    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mCurveVertices1.data());
-    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayColors.data());
 
-    glEnableVertexAttribArray(m_posAttr);
-    glEnableVertexAttribArray(m_colAttr);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, mCurveVertices1.size() / 3);
-    glDrawArrays(GL_LINE_STRIP, 0, displayColors.size() / 3);
-
-    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mCurveVertices2.data());
-    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayColors.data());
+    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mCurveVertices1.data());
+    glVertexAttribPointer(m_normAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mCurveNormals1.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mColors.data());
 
     glEnableVertexAttribArray(m_posAttr);
     glEnableVertexAttribArray(m_colAttr);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, mCurveVertices2.size() / 3);
-    glDrawArrays(GL_LINE_STRIP, 0, displayColors.size() / 3);
-
-    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mCurveVertices3.data());
-    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayColors.data());
-
-    glEnableVertexAttribArray(m_posAttr);
-    glEnableVertexAttribArray(m_colAttr);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, mCurveVertices3.size() / 3);
-    glDrawArrays(GL_LINE_STRIP, 0, displayColors.size() / 3);
-
-    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mCurveVertices4.data());
-    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayColors.data());
-
-    glEnableVertexAttribArray(m_posAttr);
-    glEnableVertexAttribArray(m_colAttr);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, mCurveVertices4.size() / 3);
-    glDrawArrays(GL_LINE_STRIP, 0, displayColors.size() / 3);
-
-    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayControlPoints.data());
-    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayControlColors.data());
-
-    glEnableVertexAttribArray(m_posAttr);
-    glEnableVertexAttribArray(m_colAttr);
+    glEnableVertexAttribArray(m_normAttr);
 
 
-    glEnable(GL_PROGRAM_POINT_SIZE);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, mData.mCurveVertices1.size() / 3);
+    glDrawArrays(GL_LINE_STRIP, 0, mData.mColors.size() / 3);
 
-    glDrawArrays(GL_POINTS, 0, displayControlPoints.size()/3);
+    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mCurveVertices2.data());
+    glVertexAttribPointer(m_normAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mCurveNormals2.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mColors.data());
+
+
+
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, mData.mCurveVertices2.size() / 3);
+    glDrawArrays(GL_LINE_STRIP, 0, mData.mColors.size() / 3);
+
+
+    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mCurveVertices3.data());
+    glVertexAttribPointer(m_normAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mCurveNormals3.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mColors.data());
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, mData.mCurveVertices3.size() / 3);
+
+    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mCurveVertices4.data());
+    glVertexAttribPointer(m_normAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mCurveNormals4.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mColors.data());
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, mData.mCurveVertices4.size() / 3);
+
+    //glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayControlPoints.data());
+    //glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayControlColors.data());
+
+    //glEnableVertexAttribArray(m_posAttr);
+    //glEnableVertexAttribArray(m_colAttr);
+
+
+    /*glEnable(GL_PROGRAM_POINT_SIZE);
+
+    glDrawArrays(GL_POINTS, 0, displayControlPoints.size()/3);*/
 
     glDisableVertexAttribArray(m_colAttr);
     glDisableVertexAttribArray(m_posAttr);
@@ -123,7 +134,7 @@ void OpenGLWindow::paintGL()
 void OpenGLWindow::initializeGL()
 {
     static const char* vertexShaderSource =
-        "attribute highp vec4 posAttr;\n"
+        /*"attribute highp vec4 posAttr;\n"
         "attribute lowp vec4 colAttr;\n"
         "varying lowp vec4 col;\n"
         "uniform highp mat4 matrix;\n"
@@ -131,12 +142,39 @@ void OpenGLWindow::initializeGL()
         "   col = colAttr;\n"
         "   gl_PointSize = 10.0;\n"
         "   gl_Position = matrix * posAttr;\n"
+        "}\n";*/
+        "attribute highp vec4 posAttr;\n"
+        "attribute lowp vec4 colAttr;\n"
+        "attribute lowp vec3 norAttr;\n"
+        "varying lowp vec4 col;\n"
+        "varying vec3 vert;\n"
+        "varying vec3 vertNormal;\n"
+        "uniform highp mat4 projMatrix;\n"
+        "uniform highp mat4 viewMatrix;\n"
+        "uniform highp mat4 modelMatrix;\n"
+        "uniform mat3 normalMatrix;\n"
+        "void main() {\n"
+        "   col = colAttr;\n"
+        "   vert = posAttr.xyz;\n"
+        "   vertNormal = normalMatrix * norAttr;\n"
+        "   gl_Position = projMatrix * viewMatrix * modelMatrix * posAttr;\n"
         "}\n";
 
     static const char* fragmentShaderSource =
-        "varying lowp vec4 col;\n"
+        /*"varying lowp vec4 col;\n"
         "void main() {\n"
         "   gl_FragColor = col;\n"
+        "}\n";*/
+        "varying lowp vec4 col;\n"
+        "varying highp vec3 vert;\n"
+        "varying highp vec3 vertNormal;\n"
+        "uniform highp vec3 lightPos;\n"
+        "void main() {\n"
+        "   highp vec3 L = normalize(lightPos - vert);\n"
+        "   highp float NL = max(dot(normalize(vertNormal), L), 0.0);\n"
+        "   highp vec3 color = vec3(col);\n"
+        "   highp vec3 col1 = clamp(color * 0.2 + color * 0.8 * NL, 0.0, 1.0);\n"
+        "   gl_FragColor = vec4(col1, 1.0);\n"
         "}\n";
     rotationAngle = QQuaternion::fromAxisAndAngle(0.0f, 0.0f, 1.0f, 0.0f);
     initializeOpenGLFunctions();
@@ -149,9 +187,20 @@ void OpenGLWindow::initializeGL()
     Q_ASSERT(m_posAttr != -1);
     m_colAttr = mProgram->attributeLocation("colAttr");
     Q_ASSERT(m_colAttr != -1);
-    m_matrixUniform = mProgram->uniformLocation("matrix");
-    Q_ASSERT(m_matrixUniform != -1);
+    m_normAttr = mProgram->attributeLocation("norAttr");
+    Q_ASSERT(m_normAttr != -1);
+    m_modelMatrixUniform = mProgram->uniformLocation("modelMatrix");
+    Q_ASSERT(m_modelMatrixUniform != -1);
+    m_viewMatrixUniform = mProgram->uniformLocation("viewMatrix");
+    Q_ASSERT(m_viewMatrixUniform != -1);
+    m_projectionMatrixUniform = mProgram->uniformLocation("projMatrix");
+    Q_ASSERT(m_projectionMatrixUniform != -1);
+    m_normalMatrixUniform = mProgram->uniformLocation("normalMatrix");
+    Q_ASSERT(m_normalMatrixUniform != -1);
+    m_lightPosUniform = mProgram->uniformLocation("lightPos");
+    Q_ASSERT(m_lightPosUniform != -1);
     glEnable(GL_DEPTH_TEST);
+
 
 }
 
@@ -194,116 +243,3 @@ void OpenGLWindow::zoomOut()
     update();
 }
 
-void OpenGLWindow::bezierFuntionality()
-{
-    OutputDebugStringA("Bezier clicked\n");
-
-    DS::Container* container = DS::Container::getInstance();
-    displayVertices.clear();
-    displayColors.clear();
-    displayControlPoints.clear();
-    displayControlColors.clear();
-    mCurveVertices1.clear();
-    mCurveVertices2.clear();
-    mCurveVertices3.clear();
-    mCurveVertices4.clear();
-    std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
-    
-    Feature::Bezier bzeierObj;
-    bzeierObj.drawCurve(controlPoints, mCurveVertices1, mCurveVertices2, mCurveVertices3, mCurveVertices4, displayColors,2);
-    for (int i = 0; i < 4; i++)
-    {
-        displayControlPoints.push_back(controlPoints[i].x());
-        displayControlPoints.push_back(controlPoints[i].y());
-        displayControlPoints.push_back(controlPoints[i].z());
-
-        displayControlColors.push_back(1);
-        displayControlColors.push_back(0);
-        displayControlColors.push_back(0);
-    }
-}
-
-void OpenGLWindow::bezierCurveFuntionality()
-{  
-    OutputDebugStringA("Bezier clicked1\n");
-
-    DS::Container* container = DS::Container::getInstance();
-    
-    displayControlPoints.resize(0);
-    displayControlColors.resize(0);
-    displayVertices.clear();
-    displayColors.clear();
-    mCurveVertices1.clear();
-    mCurveVertices2.clear();
-    mCurveVertices3.clear();
-    mCurveVertices4.clear();
-    std::vector<GLdouble> defaultVertices = container->defaultPoints();
-    std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
-    
-    Feature::Bezier bzeierObj;
-    bzeierObj.drawCurve(controlPoints, mCurveVertices1, mCurveVertices2, mCurveVertices3, mCurveVertices4, displayColors, 1);
-    for (int i = 0; i < 4; i++)
-    {
-        displayControlPoints.push_back(controlPoints[i].x());
-        displayControlPoints.push_back(controlPoints[i].y());
-        displayControlPoints.push_back(controlPoints[i].z());
-
-        displayControlColors.push_back(1);
-        displayControlColors.push_back(0);
-        displayControlColors.push_back(0);
-    }
-}
-
-void OpenGLWindow::bsplineFunctionality()
-{
-    OutputDebugStringA("BSpline clicked\n");
-
-    DS::Container* container = DS::Container::getInstance();
-    displayControlPoints.clear();
-    displayControlColors.clear();
-    displayVertices.clear();
-    displayColors.clear();
-    mCurveVertices1.clear();
-    mCurveVertices2.clear();
-    mCurveVertices3.clear();
-    mCurveVertices4.clear();
-    std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
-    
-    Feature::BSpline bsplineObj(controlPoints.size()-1);
-    bsplineObj.drawBsplineCurve(controlPoints, mCurveVertices1, mCurveVertices2, mCurveVertices3, mCurveVertices4,displayColors,2);
-    assignColors(controlPoints);
-}
-
-void OpenGLWindow::bsplineCurveFunctionality()
-{
-    OutputDebugStringA("BSpline clicked\n");
-
-    DS::Container* container = DS::Container::getInstance();
-    displayControlPoints.clear();
-    displayControlColors.clear();
-    displayVertices.clear();
-    displayColors.clear();
-    mCurveVertices1.clear();
-    mCurveVertices2.clear();
-    mCurveVertices3.clear();
-    mCurveVertices4.clear();
-    std::vector<Geometry::Point3D> controlPoints = container->controlPoints();
-    
-    Feature::BSpline bsplineObj(controlPoints.size()-1);
-    bsplineObj.drawBsplineCurve(controlPoints, mCurveVertices1, mCurveVertices2, mCurveVertices3, mCurveVertices4, displayColors, 1);
-    assignColors(controlPoints);
-}
-
-void OpenGLWindow::assignColors(std::vector<Geometry::Point3D>& controlPoints)
-{
-    for (int i = 0; i < controlPoints.size(); i++)
-    {
-        displayControlPoints.push_back(controlPoints[i].x());
-        displayControlPoints.push_back(controlPoints[i].y());
-        displayControlPoints.push_back(controlPoints[i].z());
-
-        displayControlColors.push_back(1);
-        displayControlColors.push_back(0);
-        displayControlColors.push_back(0);
-    }
-}

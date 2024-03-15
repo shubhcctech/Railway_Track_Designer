@@ -20,10 +20,13 @@ private:
     void addSpinBox();
     void handleRadioButtonClicked();
     void updatePointLabelText(int index);
-    void setPoints();
     void updateSelectedValuesLabel(int index);
-    void updateCurveOnCoordinateChange(double value);
-    void handleCurveItemSelection();
+    void setPoints();
+    void bezierFuntionality();
+    void bezierCurveFuntionality();
+    void bsplineFunctionality();
+    void bsplineCurveFunctionality();
+    void assignColors(std::vector<Geometry::Point3D>& controlPoints);
 private:
     int controlPoints;
     int row;
