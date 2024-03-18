@@ -268,31 +268,55 @@ void Visualizer::setPoints() {
     highlightSelectedItem(selectedIndex);
     
 }
+
+//right side
 void Visualizer::bezierFuntionality()
 {
     OutputDebugStringA("Bezier clicked\n");
 
     ContainerData data;
-
     DS::Container* container = DS::Container::getInstance();
-
+    clearData(container);
     Feature::Bezier bzeierObj;
-    bzeierObj.drawCurve(container->controlPoints(), data.mCurveVertices1, data.mCurveVertices2, data.mCurveVertices3, data.mCurveVertices4, data.mColors, 2, data.mCurveNormals1, data.mCurveNormals2, data.mCurveNormals3, data.mCurveNormals4);
+    bzeierObj.drawCurve(container->controlPoints(), container->curveVertices1(), container->curveVertices2(), container->curveVertices3(), container->curveVertices4(), container->colors(), 2, container->curveNormals1(), container->curveNormals2(), container->curveNormals3(), container->curveNormals4());
+    for (int i = 0; i < 4; i++)
+    {
+        data.displayControlPoints.push_back(container->controlPoints()[i].x());
+        data.displayControlPoints.push_back(container->controlPoints()[i].y());
+        data.displayControlPoints.push_back(container->controlPoints()[i].z());
+
+        data.displayControlColors.push_back(1);
+        data.displayControlColors.push_back(0);
+        data.displayControlColors.push_back(0);
+    }
+    assignData(&data, container);
     mRenderer1->setData(data);
     mRenderer1->update();
 
 }
 
+//left side
 void Visualizer::bezierCurveFuntionality()
 {
     OutputDebugStringA("Bezier curve\n");
 
     ContainerData data;
-
     DS::Container* container = DS::Container::getInstance();
+    clearData(container);
 
     Feature::Bezier bzeierObj;
-    bzeierObj.drawCurve(container->controlPoints(), data.mCurveVertices1, data.mCurveVertices2, data.mCurveVertices3, data.mCurveVertices4, data.mColors, 1, data.mCurveNormals1, data.mCurveNormals2, data.mCurveNormals3, data.mCurveNormals4);
+    bzeierObj.drawCurve(container->controlPoints(), container->curveVertices1(), container->curveVertices2(), container->curveVertices3(), container->curveVertices4(), container->colors(), 1, container->curveNormals1(), container->curveNormals2(), container->curveNormals3(), container->curveNormals4());
+    for (int i = 0; i < 4; i++)
+    {
+        data.displayControlPoints.push_back(container->controlPoints()[i].x());
+        data.displayControlPoints.push_back(container->controlPoints()[i].y());
+        data.displayControlPoints.push_back(container->controlPoints()[i].z());
+
+        data.displayControlColors.push_back(1);
+        data.displayControlColors.push_back(0);
+        data.displayControlColors.push_back(0);
+    }
+    assignData(&data, container);
     mRenderer->setData(data);
     mRenderer->update();
 }
@@ -303,11 +327,22 @@ void Visualizer::bsplineFunctionality()
 
     ContainerData data;
     DS::Container* container = DS::Container::getInstance();
+    clearData(container);
 
     Feature::BSpline bsplineObj(container->controlPoints().size() - 1);
-    bsplineObj.drawBsplineCurve(container->controlPoints(), data.mCurveVertices1, data.mCurveVertices2, data.mCurveVertices3, data.mCurveVertices4, data.mColors, 2);
-    assignColors(container->controlPoints());
+    bsplineObj.drawBsplineCurve(container->controlPoints(), container->curveVertices1(), container->curveVertices2(), container->curveVertices3(), container->curveVertices4(), container->colors(), 2);
+    for (int i = 0; i < container->controlPoints().size(); i++)
+    {
+        data.displayControlPoints.push_back(container->controlPoints()[i].x());
+        data.displayControlPoints.push_back(container->controlPoints()[i].y());
+        data.displayControlPoints.push_back(container->controlPoints()[i].z());
 
+        data.displayControlColors.push_back(1);
+        data.displayControlColors.push_back(0);
+        data.displayControlColors.push_back(0);
+    }
+
+    assignData(&data, container);
     mRenderer1->setData(data);
     mRenderer1->update();
 }
@@ -318,27 +353,52 @@ void Visualizer::bsplineCurveFunctionality()
 
     ContainerData data;
     DS::Container* container = DS::Container::getInstance();
+    clearData(container);
 
     Feature::BSpline bsplineObj(container->controlPoints().size() - 1);
-    bsplineObj.drawBsplineCurve(container->controlPoints(), data.mCurveVertices1, data.mCurveVertices2, data.mCurveVertices3, data.mCurveVertices4, data.mColors, 1);
-    assignColors(container->controlPoints());
+    bsplineObj.drawBsplineCurve(container->controlPoints(), container->curveVertices1(), container->curveVertices2(), container->curveVertices3(), container->curveVertices4(), container->colors(), 1);
+    for (int i = 0; i < container->controlPoints().size(); i++)
+    {
+        data.displayControlPoints.push_back(container->controlPoints()[i].x());
+        data.displayControlPoints.push_back(container->controlPoints()[i].y());
+        data.displayControlPoints.push_back(container->controlPoints()[i].z());
+
+        data.displayControlColors.push_back(1);
+        data.displayControlColors.push_back(0);
+        data.displayControlColors.push_back(0);
+    }
+    assignData(&data, container);
     mRenderer->setData(data);
     mRenderer->update();
 }
 
-void Visualizer::assignColors(std::vector<Geometry::Point3D>& controlPoints)
+void Visualizer::assignData(struct ContainerData* data, DS::Container* container)
 {
-    /*for (int i = 0; i < controlPoints.size(); i++)
-    {
-        displayControlPoints.push_back(controlPoints[i].x());
-        displayControlPoints.push_back(controlPoints[i].y());
-        displayControlPoints.push_back(controlPoints[i].z());
+    data->mCurveNormals1 = container->curveNormals1();
+    data->mCurveNormals2 = container->curveNormals2();
+    data->mCurveNormals3 = container->curveNormals3();
+    data->mCurveNormals4 = container->curveNormals4();
 
-        displayControlColors.push_back(1);
-        displayControlColors.push_back(0);
-        displayControlColors.push_back(0);
-    }*/
+    data->mCurveVertices1 = container->curveVertices1();
+    data->mCurveVertices2 = container->curveVertices2();
+    data->mCurveVertices3 = container->curveVertices3();
+    data->mCurveVertices4 = container->curveVertices4();
+
+    data->mColors = container->colors();
 }
+void Visualizer::clearData(DS::Container* container)
+{
+    container->curveNormals1().clear();
+    container->curveNormals2().clear();
+    container->curveNormals3().clear();
+    container->curveNormals4().clear();
+    container->curveVertices1().clear();
+    container->curveVertices2().clear();
+    container->curveVertices3().clear();
+    container->curveVertices4().clear();
+    container->colors().clear();
+}
+
 // Update the QListWidget with coordinates
 void Visualizer::updateCoordinateList() {
     // Clear the current list
