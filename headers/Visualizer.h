@@ -1,5 +1,6 @@
 #pragma once
 #include"Point3D.h"
+#include "Container.h"
 #include <QtWidgets/QMainWindow>
 #include "Visualizer.h"
 using namespace Geometry;
@@ -20,13 +21,17 @@ private:
     void addSpinBox();
     void handleRadioButtonClicked();
     void updatePointLabelText(int index);
+    void updateCoordinateList();
     void updateSelectedValuesLabel(int index);
     void setPoints();
     void bezierFuntionality();
     void bezierCurveFuntionality();
     void bsplineFunctionality();
     void bsplineCurveFunctionality();
+    void highlightSelectedItem(int index);
     void assignColors(std::vector<Geometry::Point3D>& controlPoints);
+    void clearData(DS::Container* container);
+    void assignData(struct ContainerData*, DS::Container* container);
 private:
     int controlPoints;
     int row;
@@ -56,5 +61,7 @@ private:
     QLabel* mSelectedValuesLabel;
     std::vector<Point3D> points;
     QComboBox* mComboBox;
+  
+
     
 };

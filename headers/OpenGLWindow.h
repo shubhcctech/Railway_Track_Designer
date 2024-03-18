@@ -12,7 +12,6 @@ class QOpenGLPaintDevice;
 
 struct ContainerData
 {
-
     std::vector<GLdouble> mCurveNormals1;
     std::vector<GLdouble> mCurveNormals2;
     std::vector<GLdouble> mCurveNormals3;
@@ -22,6 +21,8 @@ struct ContainerData
     std::vector<GLdouble> mCurveVertices3;
     std::vector<GLdouble> mCurveVertices4;
     std::vector<GLdouble> mColors;
+    std::vector<GLdouble> displayControlPoints;
+    std::vector<GLdouble> displayControlColors;
 };
 
 class OpenGLWindow :public QOpenGLWidget, protected QOpenGLFunctions
