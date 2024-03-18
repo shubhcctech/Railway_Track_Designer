@@ -56,6 +56,7 @@ void Visualizer::setupUi()
     mParameters = new QLabel("Parameters: ", this);
     mSelectedValuesLabel = new QLabel("Selected Values: Start Point", this);
     mComboBox = new QComboBox();
+    mPointsList = new QListWidget(this);
     mParameters->setFont(font);
     mSet->setFont(font);
     mRadioButton1->setFont(font);
@@ -66,12 +67,19 @@ void Visualizer::setupUi()
     mButtonGroupForRadioBtn->addButton(mRadioButton2);
     mRadioButton1->setChecked(true);
     mAddSpinBoxButton->setVisible(checked);
+    mPointsList->setVisible(false);
+
 
     /// Add list to Combo box.
     mComboBox->addItem("Start Point");
     mComboBox->addItem("End Point");
     mComboBox->addItem("Control Point 1");
     mComboBox->addItem("Control Point 2");
+
+  
+  
+
+
 
    /// Setting the spin boxes.
     mXcoordinate->setRange(-100.0, 100.0);
@@ -86,10 +94,13 @@ void Visualizer::setupUi()
     mZcoordinate->setSingleStep(0.5);
     mZcoordinate->setPrefix("Z: ");
     mZcoordinate->setValue(points[0].z());
+   
+    
 
     /// Button sizes
     mDisplay->setFixedHeight(50);
-    
+    mPointsList->setFixedHeight(150);
+
 
     /// Aligning the widgets into the layout
     mGridLayout->addWidget(mRenderer, 0, 0,10,4);
@@ -103,11 +114,11 @@ void Visualizer::setupUi()
     mGridLayout->addWidget(mYcoordinate, 4, 9, 1, 1);
     mGridLayout->addWidget(mZcoordinate, 4, 10, 1, 1);
     mGridLayout->addWidget(mSet, 5, 8, 1, 3);
-    mGridLayout->addWidget(mAddSpinBoxButton, 6, 8, 1, 3);
+    mGridLayout->addWidget(mPointsList, 6, 8, 1, 3);
+    mGridLayout->addWidget(mAddSpinBoxButton, 7, 8, 1, 3);
     mGridLayout->addWidget(mDisplay,9, 8, 1, 3);
    
-   /* mPointsList = new QListWidget();
-    mGridLayout->addWidget(mPointsList, 48, 6, 2, 3);*/
+   
 
     /// Setting the components.
     setMenuBar(mMenuBar);
@@ -124,6 +135,7 @@ void Visualizer::setupUi()
     connect(mRadioButton2, &QRadioButton::clicked, this, &Visualizer::handleRadioButtonClicked);
     connect(mSet, &QPushButton::clicked, this, &Visualizer::setPoints);
     connect(mComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Visualizer::updateSelectedValuesLabel);
+    //connect(mSet, &QPushButton::clicked, this, &Visualizer::updateCoordinateList);
 
 }
 
@@ -133,13 +145,20 @@ void Visualizer::handleDisplayButtonClicked()
 {
     
     if (checked) {
-        
+        mPointsList->setVisible(true);
+        updateCoordinateList();
         bsplineCurveFunctionality();
         bsplineFunctionality();
+        highlightSelectedItem(0);
+
     }
     else {
-       bezierCurveFuntionality();
-       bezierFuntionality();
+        mPointsList->setVisible(true);
+        updateCoordinateList();
+        bezierCurveFuntionality();
+        bezierFuntionality();
+        highlightSelectedItem(0);
+
     }
  
 }
@@ -153,6 +172,11 @@ void Visualizer::addSpinBox()
         QString newItem = "Control Point "+QString::number(controlPoints);
         mComboBox->addItem(newItem);
         controlPoints++;
+        QString pointStr = newItem + ": ( " +
+            QString::number(points.back().x()) + ", " +
+            QString::number(points.back().y()) + ", " +
+            QString::number(points.back().z()) + " )";
+        mPointsList->addItem(pointStr);
         
     }
     else {
@@ -164,6 +188,7 @@ void Visualizer::handleRadioButtonClicked()
 {
     if (mRadioButton1->isChecked()) {
         checked = false;
+        mPointsList->setVisible(false);
         mAddSpinBoxButton->setVisible(checked);
         mComboBox->clear();
         mComboBox->addItem("Start Point");
@@ -171,25 +196,26 @@ void Visualizer::handleRadioButtonClicked()
         mComboBox->addItem("Control Point 1");
         mComboBox->addItem("Control Point 2");
 
-
     }
     else if (mRadioButton2->isChecked()) {
         checked = true;
+        mPointsList->setVisible(false);
         mAddSpinBoxButton->setVisible(checked);
         mComboBox->clear();
         mComboBox->addItem("Start Point");
         mComboBox->addItem("End Point");
-        for (int i = 1; i <= controlPoints - 1; ++i) {
+
+        // Add control points to the combo box starting from 2
+        for (int i = 1; i < controlPoints; ++i) {
             QString newItem = "Control Point " + QString::number(i);
             mComboBox->addItem(newItem);
         }
-        
         // Set the combo box index to a valid value if it's out of bounds
         if (mComboBox->currentIndex() >= mComboBox->count()) {
             mComboBox->setCurrentIndex(0);
-        }       
-    }
+        }
 
+    }
 }
 void Visualizer::updateSelectedValuesLabel(int index)
 {
@@ -203,6 +229,7 @@ void Visualizer::updateSelectedValuesLabel(int index)
             mYcoordinate->setValue(points[index].y());
             mZcoordinate->setValue(points[index].z());
         }
+        highlightSelectedItem(index);
 
     }
     else {
@@ -229,15 +256,18 @@ void Visualizer::setPoints() {
         points[selectedIndex].setZ(zCoordinate);
         // Update the container with the modified control points
         containerInstance->setControlPoints(points);
+        
     }
     else
     {
         points.emplace_back(xCoordinate, yCoordinate, zCoordinate);
         containerInstance->setControlPoints(points);
     }
+
+    updateCoordinateList();
+    highlightSelectedItem(selectedIndex);
     
 }
-
 void Visualizer::bezierFuntionality()
 {
     OutputDebugStringA("Bezier clicked\n");
@@ -253,7 +283,6 @@ void Visualizer::bezierFuntionality()
 
 }
 
-//left side
 void Visualizer::bezierCurveFuntionality()
 {
     OutputDebugStringA("Bezier curve\n");
@@ -310,6 +339,26 @@ void Visualizer::assignColors(std::vector<Geometry::Point3D>& controlPoints)
         displayControlColors.push_back(0);
     }*/
 }
+// Update the QListWidget with coordinates
+void Visualizer::updateCoordinateList() {
+    // Clear the current list
+    mPointsList->clear();
 
+    // Add coordinates from QComboBox
+    for (int i = 0; i < points.size(); ++i) {
+        QString coordinate = mComboBox->itemText(i) + ": (" + QString::number(points[i].x()) + ", " + QString::number(points[i].y()) + ", " + QString::number(points[i].z()) + ")";
+        mPointsList->addItem(coordinate);
+    }
+}
+void Visualizer::highlightSelectedItem(int index) {
+    for (int i = 0; i < mPointsList->count(); ++i) {
+        if (i == index) {
+            mPointsList->item(i)->setBackground(QColor(Qt::yellow)); // Set the background color of the selected item
+        }
+        else {
+            mPointsList->item(i)->setBackground(QColor(Qt::transparent)); // Set the background color of other items to transparent
+        }
+    }
+}
 
 

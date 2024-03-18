@@ -49,3 +49,37 @@ void DS::Container::setControlPoints(std::vector<Geometry::Point3D> points) {
 
 }
 
+std::vector<GLdouble>& DS::Container::curveNormals1()
+{
+	return mCurveNormals1;
+}
+std::vector<GLdouble>& DS::Container::curveNormals2()
+{
+	return mCurveNormals2;
+}
+std::vector<GLdouble>& DS::Container::curveNormals3()
+{
+	return mCurveNormals3;
+
+}
+std::vector<GLdouble>& DS::Container::curveNormals4()
+{
+	return mCurveNormals4;
+
+}
+std::vector<GLdouble>& DS::Container::curveVertices1()
+{
+	return mCurveVertices1;
+}
+std::vector<GLdouble>& DS::Container::curveVertices2()
+{
+	return mCurveVertices2;
+}
+std::vector<GLdouble>& DS::Container::curveVertices3()
+{
+	return mCurveVertices3;
+}
+std::vector<GLdouble>& DS::Container::curveVertices4()
+{
+	return mCurveVertices4;
+}
