@@ -83,3 +83,8 @@ std::vector<GLdouble>& DS::Container::curveVertices4()
 {
 	return mCurveVertices4;
 }
+
+std::vector<GLdouble>& DS::Container::colors()
+{
+	return mColors;
+}

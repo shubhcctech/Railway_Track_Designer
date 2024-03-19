@@ -29,7 +29,6 @@ private:
     void bsplineFunctionality();
     void bsplineCurveFunctionality();
     void highlightSelectedItem(int index);
-    void assignColors(std::vector<Geometry::Point3D>& controlPoints);
     void clearData(DS::Container* container);
     void assignData(struct ContainerData*, DS::Container* container);
 private:

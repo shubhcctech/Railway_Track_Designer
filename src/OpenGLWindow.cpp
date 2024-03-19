@@ -115,16 +115,16 @@ void OpenGLWindow::paintGL()
     glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.mColors.data());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, mData.mCurveVertices4.size() / 3);
 
-    //glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayControlPoints.data());
-    //glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, displayControlColors.data());
+    glVertexAttribPointer(m_posAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.displayControlPoints.data());
+    glVertexAttribPointer(m_colAttr, 3, GL_DOUBLE, GL_FALSE, 0, mData.displayControlColors.data());
 
-    //glEnableVertexAttribArray(m_posAttr);
-    //glEnableVertexAttribArray(m_colAttr);
+    glEnableVertexAttribArray(m_posAttr);
+    glEnableVertexAttribArray(m_colAttr);
 
 
-    /*glEnable(GL_PROGRAM_POINT_SIZE);
+    glEnable(GL_PROGRAM_POINT_SIZE);
 
-    glDrawArrays(GL_POINTS, 0, displayControlPoints.size()/3);*/
+    glDrawArrays(GL_POINTS, 0, mData.displayControlPoints.size() / 3);
 
     glDisableVertexAttribArray(m_colAttr);
     glDisableVertexAttribArray(m_posAttr);
@@ -156,6 +156,7 @@ void OpenGLWindow::initializeGL()
         "void main() {\n"
         "   col = colAttr;\n"
         "   vert = posAttr.xyz;\n"
+        "   gl_PointSize = 10.0;\n"
         "   vertNormal = normalMatrix * norAttr;\n"
         "   gl_Position = projMatrix * viewMatrix * modelMatrix * posAttr;\n"
         "}\n";
